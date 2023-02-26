@@ -30,7 +30,7 @@ public class PathPlannerAutos {
         lastCommand.cancel();
     }
 
-    public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+    public static Command followTrajectoryCommand(PathPlannerTrajectory traj) {
 
         lastCommand = new SequentialCommandGroup(
              new PPSwerveControllerCommand(
@@ -44,5 +44,10 @@ public class PathPlannerAutos {
                  true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                  s_Swerve));
         return lastCommand;
+     }
+
+     public static Command testAuto() {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(4, 3));
+        return followTrajectoryCommand(traj);
      }
 }

@@ -31,13 +31,18 @@ public class Elevator extends SubsystemBase {
 		return rightElevatorMotor.getSelectedSensorPosition();
 	}
 
-    public double getMotorVoltage() {
+    public double getRightMotorVoltage() {
 		return rightElevatorMotor.getMotorOutputVoltage();
+	}
+
+    public double getLeftMotorVoltage() {
+		return leftElevatorMotor.getMotorOutputVoltage();
 	}
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator Encoder Pos: ", getMotorPosition());
-        SmartDashboard.putNumber("Elevator Voltage: ", getMotorVoltage());
+        SmartDashboard.putNumber("LeftElevatorVoltage: ", getLeftMotorVoltage());
+        SmartDashboard.putNumber("RightElevator Voltage: ", getRightMotorVoltage());
     }
 }

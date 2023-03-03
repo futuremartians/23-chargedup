@@ -32,6 +32,8 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton elevatorUp = new JoystickButton(operator, XboxController.Button.kY.value);
+      private final JoystickButton elevatorDown = new JoystickButton(operator, XboxController.Button.kA.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -53,7 +55,7 @@ public class RobotContainer {
             )
         );
 
-        new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.1);
+       // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.1);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -68,11 +70,15 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    }
+        elevatorUp.whileTrue(new ElevatorJoystick(s_elevator, 0.075));
+        elevatorDown.whileTrue(new ElevatorJoystick(s_elevator, -0.075));
+        //54240 upper limit -48500 lower limit
+
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
+    }
 }

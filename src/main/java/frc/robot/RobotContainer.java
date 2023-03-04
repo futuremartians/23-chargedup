@@ -32,7 +32,6 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-      private final JoystickButton elevatorJoystick = new JoystickButton(operator, elevatorPowerAxis);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -53,6 +52,12 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+        s_elevator.setDefaultCommand(
+            new ElevatorJoystick(
+                s_elevator, 
+                () -> -operator.getRawAxis(elevatorPowerAxis)*0.4
+            )
+        );
 
        // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.1);
 
@@ -69,7 +74,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        elevatorJoystick.whileTrue(new ElevatorJoystick(s_elevator, elevatorPowerAxis));
+       // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.2);
+        
         //54240 upper limit -48500 lower limit
 
 

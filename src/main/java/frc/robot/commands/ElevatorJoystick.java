@@ -4,17 +4,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
+import java.util.function.DoubleSupplier;
 
 public class ElevatorJoystick extends CommandBase {
 
   private final Elevator s_elevator;
-  private final double speed;
+  private DoubleSupplier speed;
 
   /** Creates a new ElevatorJoystick. */
-  public ElevatorJoystick(Elevator s_elevator, double speed) {
+  public ElevatorJoystick(Elevator s_elevator, DoubleSupplier speed) {
     this.s_elevator = s_elevator;
     this.speed = speed;
     addRequirements(s_elevator);
@@ -27,7 +30,8 @@ public class ElevatorJoystick extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_elevator.setElevatorSpeed(speed);
+    double speedVal = MathUtil.applyDeadband(speed.getAsDouble(), Constants.stickDeadband);
+    s_elevator.setElevatorSpeed(speedVal);
   }
 
   // Called once the command ends or is interrupted.

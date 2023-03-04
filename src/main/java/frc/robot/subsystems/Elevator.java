@@ -27,6 +27,10 @@ public class Elevator extends SubsystemBase {
         rightElevatorMotor.set(ControlMode.PercentOutput, speed);
     }
 
+    public void setElevatorVoltage(double voltage) {
+        rightElevatorMotor.setVoltage(voltage);
+    }
+
     public double getMotorPosition() {
 		return rightElevatorMotor.getSelectedSensorPosition();
 	}

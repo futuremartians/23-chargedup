@@ -5,33 +5,44 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Elevator;
 
 public class MoveElevatorToPos extends CommandBase {
   private final Elevator s_elevator;
-  private final PIDController pidController;
+  PIDController pidController;
+  ElevatorFeedforward feedforwardControl;
 
   /** Creates a new ElevatorJoystick. */
   public MoveElevatorToPos(Elevator s_elevator, double pos) {
     this.s_elevator = s_elevator;
-    this.pidController = new PIDController(pos, pos, pos);
+    this.pidController = new PIDController(0.025,0.0,0.0);
     pidController.setSetpoint(pos);
+    feedforwardControl = new ElevatorFeedforward(0.07, 0.45, 62.5, 3.5);
     addRequirements(s_elevator);
 }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    pidController.reset();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double feedforward = feedforwardControl.calculate(0);
+    double voltage = pidController.calculate(s_elevator.getMotorPosition() + feedforward);
+    s_elevator.setElevatorVoltage(voltage);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    s_elevator.setElevatorVoltage(0);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -6,8 +6,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -20,18 +21,20 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick operator = new Joystick(1);
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
-    /* Drive Controls */
+    /* Drive Controls 
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int elevatorPowerAxis = XboxController.Axis.kRightY.value;
+    private final int elevatorPowerAxis = XboxController.Axis.kRightY.value;*/
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    /*private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton elevatorUp = new JoystickButton(operator, XboxController.Button.kY.value);*/
+    
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -46,16 +49,16 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
+                () -> -driver.getLeftY(), 
+                () -> -driver.getLeftX(), 
+                () -> -driver.getRightX(), 
+                () -> false
             )
         );
         s_elevator.setDefaultCommand(
             new ElevatorJoystick(
                 s_elevator, 
-                () -> -operator.getRawAxis(elevatorPowerAxis)*0.4
+                () -> -operator.getRightY()*0.4
             )
         );
 
@@ -73,8 +76,10 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-       // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.2);
+        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        /* Operator Buttons */
+        operator.povUp().onTrue(new MoveElevatorToPos(s_elevator, ElevatorConstants.elevatorUpPos));
         
         //54240 upper limit -48500 lower limit
 

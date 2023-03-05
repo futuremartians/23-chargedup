@@ -15,7 +15,6 @@ public class MoveElevatorToPos extends CommandBase {
   PIDController pidController;
   ElevatorFeedforward feedforwardControl;
 
-  /** Creates a new ElevatorJoystick. */
   public MoveElevatorToPos(Elevator s_elevator, double pos) {
     this.s_elevator = s_elevator;
     this.pidController = new PIDController(0.025,0.0,0.0);
@@ -41,7 +40,7 @@ public class MoveElevatorToPos extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_elevator.setElevatorVoltage(0);
+    s_elevator.setElevatorSpeed(0);
   }
 
   // Returns true when the command should end.

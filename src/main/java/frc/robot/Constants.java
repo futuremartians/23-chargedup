@@ -11,6 +11,7 @@ import frc.lib.util.COTSFalconSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
+
     public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
@@ -147,7 +148,10 @@ public final class Constants {
     }
 
     //Elevator Constants
+    public static final class ElevatorConstants {
+        public static final int leftElevatorMotorID = 14;
+        public static final int rightElevatorMotorID = 15;
 
-    public static final int leftElevatorMotorID = 14;
-    public static final int rightElevatorMotorID = 15;
+        public static final int elevatorUpPos = 30000;
+    }
 }

@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
     private static Elevator instance;
     public static Elevator getInstance() {
@@ -17,10 +18,10 @@ public class Elevator extends SubsystemBase {
     private WPI_TalonFX leftElevatorMotor, rightElevatorMotor;
 
     public Elevator() {
-        leftElevatorMotor = new WPI_TalonFX(Constants.leftElevatorMotorID);
-        leftElevatorMotor.set(ControlMode.Follower, Constants.rightElevatorMotorID);
+        leftElevatorMotor = new WPI_TalonFX(ElevatorConstants.leftElevatorMotorID);
+        leftElevatorMotor.set(ControlMode.Follower, ElevatorConstants.rightElevatorMotorID);
 
-        rightElevatorMotor = new WPI_TalonFX(Constants.rightElevatorMotorID);
+        rightElevatorMotor = new WPI_TalonFX(ElevatorConstants.rightElevatorMotorID);
     }
 
     public void setElevatorSpeed(double speed) {

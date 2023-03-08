@@ -19,9 +19,11 @@ public class Elevator extends SubsystemBase {
 
     public Elevator() {
         leftElevatorMotor = new WPI_TalonFX(ElevatorConstants.leftElevatorMotorID);
+        leftElevatorMotor.setNeutralMode(NeutralMode.Brake);
         leftElevatorMotor.set(ControlMode.Follower, ElevatorConstants.rightElevatorMotorID);
 
         rightElevatorMotor = new WPI_TalonFX(ElevatorConstants.rightElevatorMotorID);
+        rightElevatorMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void setElevatorSpeed(double speed) {

@@ -19,8 +19,11 @@ public class MoveElevatorToPos extends CommandBase {
     this.s_elevator = s_elevator;
     this.pidController = new PIDController(0.025,0.0,0.0);
     pidController.setSetpoint(pos);
+    pidController.setTolerance(500);
+    
     feedforwardControl = new ElevatorFeedforward(0, 0.15, 2.83, 0.02);
     addRequirements(s_elevator);
+    
 }
 
   // Called when the command is initially scheduled.
@@ -32,8 +35,8 @@ public class MoveElevatorToPos extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double feedforward = feedforwardControl.calculate(0);
-    double voltage = pidController.calculate(s_elevator.getMotorPosition() + feedforward);
+    double feedforward = feedforwardControl.calculate(0.1);
+    double voltage = pidController.calculate(s_elevator.getMotorPosition()+ feedforward);
     s_elevator.setElevatorVoltage(voltage);
   }
 
@@ -46,6 +49,6 @@ public class MoveElevatorToPos extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return pidController.atSetpoint();
   }
 }

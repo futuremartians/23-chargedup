@@ -40,6 +40,8 @@ public class RobotContainer {
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Elevator s_Elevator =  Elevator.getInstance();
     private final Arm s_Arm = Arm.getInstance();
+    private final Wrist s_Wrist = Wrist.getInstance();
+    private final Flipper s_Flipper = Flipper.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -62,10 +64,24 @@ public class RobotContainer {
             )
         );*/
 
-        s_Arm.setDefaultCommand(
+        /*s_Arm.setDefaultCommand(
             new ArmJoystick(
                 s_Arm, 
-                () -> -operator.getRightY()*0.2
+                () -> -operator.getRightY()*0.4
+            )
+        );*/
+
+        s_Wrist.setDefaultCommand(
+            new WristJoystick(
+                s_Wrist, 
+                () -> -operator.getRightY()*0.4
+            )
+        );
+
+        s_Flipper.setDefaultCommand(
+            new FlipperJoystick(
+                s_Flipper, 
+                () -> -operator.getLeftX()*0.2
             )
         );
 
@@ -84,8 +100,8 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.povUp().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
-        operator.povDown().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
+       // operator.povUp().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
+        //operator.povDown().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
         
         //54240 upper limit -48500 lower limit
 

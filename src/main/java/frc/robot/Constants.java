@@ -167,4 +167,12 @@ public final class Constants {
         public static final int leftArmMotorID = 16;
         public static final int rightArmMotorID = 17;
     }
+
+    public static final class WristConstants {
+        public static final int wristMotorID = 18;
+    }
+
+    public static final class FlipperConstants {
+        public static final int flipperMotorID = 19;
+    }
 }

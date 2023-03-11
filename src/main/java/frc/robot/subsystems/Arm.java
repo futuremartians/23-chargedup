@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,11 +26,12 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {
     leftArmMotor = new WPI_TalonFX(ArmConstants.leftArmMotorID);
-        leftArmMotor.setNeutralMode(NeutralMode.Brake);
-        leftArmMotor.set(ControlMode.Follower, ArmConstants.rightArmMotorID);
+    leftArmMotor.setInverted(TalonFXInvertType.Clockwise);
+    leftArmMotor.setNeutralMode(NeutralMode.Brake);
+    leftArmMotor.set(ControlMode.Follower, ArmConstants.rightArmMotorID);
 
-        rightArmMotor = new WPI_TalonFX(ArmConstants.rightArmMotorID);
-        rightArmMotor.setNeutralMode(NeutralMode.Brake);
+    rightArmMotor = new WPI_TalonFX(ArmConstants.rightArmMotorID);
+    rightArmMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   public void setArmSpeed(double speed) {
@@ -56,7 +58,7 @@ return leftArmMotor.getMotorOutputVoltage();
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arm Encoder Pos: ", getMotorPosition());
-        SmartDashboard.putNumber("LeftArmVoltage: ", getLeftMotorVoltage());
-        SmartDashboard.putNumber("RightArm Voltage: ", getRightMotorVoltage());
+    SmartDashboard.putNumber("LeftArmVoltage: ", getLeftMotorVoltage());
+    SmartDashboard.putNumber("RightArm Voltage: ", getRightMotorVoltage());
   }
 }

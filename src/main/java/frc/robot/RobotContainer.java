@@ -55,12 +55,12 @@ public class RobotContainer {
                 () -> false
             )
         );
-        s_elevator.setDefaultCommand(
+       /*  s_elevator.setDefaultCommand(
             new ElevatorJoystick(
                 s_elevator, 
                 () -> -operator.getRightY()*0.4
             )
-        );
+        );*/
 
        // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.1);
 
@@ -80,6 +80,7 @@ public class RobotContainer {
 
         /* Operator Buttons */
         operator.povUp().onTrue(new MoveElevatorToPos(s_elevator, ElevatorConstants.elevatorUpPos));
+        operator.povDown().onTrue(new MoveElevatorToPos(s_elevator, ElevatorConstants.elevatorDownPos));
         
         //54240 upper limit -48500 lower limit
 

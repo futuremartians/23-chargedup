@@ -152,6 +152,14 @@ public final class Constants {
         public static final int leftElevatorMotorID = 14;
         public static final int rightElevatorMotorID = 15;
 
-        public static final int elevatorUpPos = 30000;
+        public static final int elevatorUpPos = 80000;
+        public static final int elevatorDownPos = 0;
+
+        //PID Controller Values
+
+        public static final double kp = 0.01;
+        public static final double ki = 0;
+        public static final double kd = 0;
+
     }
 }

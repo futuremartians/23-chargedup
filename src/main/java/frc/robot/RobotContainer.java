@@ -44,6 +44,7 @@ public class RobotContainer {
     private final Arm s_Arm = Arm.getInstance();
     private final Wrist s_Wrist = Wrist.getInstance();
     private final Flipper s_Flipper = Flipper.getInstance();
+    private final Intake s_Intake = Intake.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -104,6 +105,8 @@ public class RobotContainer {
         /* Operator Buttons */
         operator.povUp().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristTestPos));
         operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperTestPos));
+        operator.rightTrigger().onTrue(new InstantCommand(() -> s_Intake.spinIntake(0.5)));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> s_Intake.spinIntake(-0.5)));
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

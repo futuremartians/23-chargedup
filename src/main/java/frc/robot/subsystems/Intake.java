@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 
 public class Intake extends SubsystemBase {
 
@@ -15,10 +17,10 @@ public class Intake extends SubsystemBase {
       return instance;
   }
 
-  private Spark spinRollersMotor;
+  private CANSparkMax spinRollersMotor;
   /** Creates a new Intake. */
   public Intake() {
-    spinRollersMotor = new Spark(20);
+    spinRollersMotor = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushed);
   }
 
   public void spinIntake(double speed) {

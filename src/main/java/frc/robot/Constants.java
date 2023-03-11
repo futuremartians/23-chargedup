@@ -156,7 +156,6 @@ public final class Constants {
         public static final int elevatorDownPos = 0;
 
         //PID Controller Values
-
         public static final double kp = 0.01;
         public static final double ki = 0;
         public static final double kd = 0;
@@ -166,13 +165,28 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int leftArmMotorID = 16;
         public static final int rightArmMotorID = 17;
+
+         //PID Controller Values
+         public static final double kp = 0.01;
+         public static final double ki = 0;
+         public static final double kd = 0;
     }
 
     public static final class WristConstants {
         public static final int wristMotorID = 18;
+
+         //PID Controller Values
+         public static final double kp = 0.01;
+         public static final double ki = 0;
+         public static final double kd = 0;
     }
 
     public static final class FlipperConstants {
         public static final int flipperMotorID = 19;
+
+         //PID Controller Values
+         public static final double kp = 0.01;
+         public static final double ki = 0;
+         public static final double kd = 0;
     }
 }

@@ -37,9 +37,9 @@ public class RobotContainer {
     
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
-    private final Elevator s_elevator = new Elevator();
-
+    private final Swerve s_Swerve = Swerve.getInstance();
+    private final Elevator s_Elevator =  Elevator.getInstance();
+    private final Arm s_Arm = Arm.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -62,7 +62,12 @@ public class RobotContainer {
             )
         );*/
 
-       // new ElevatorJoystick(s_elevator, operator.getRawAxis(elevatorPowerAxis)*0.1);
+        s_Arm.setDefaultCommand(
+            new ArmJoystick(
+                s_Arm, 
+                () -> -operator.getRightY()*0.2
+            )
+        );
 
         // Configure the button bindings
         configureButtonBindings();
@@ -79,8 +84,8 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.povUp().onTrue(new MoveElevatorToPos(s_elevator, ElevatorConstants.elevatorUpPos));
-        operator.povDown().onTrue(new MoveElevatorToPos(s_elevator, ElevatorConstants.elevatorDownPos));
+        operator.povUp().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
+        operator.povDown().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
         
         //54240 upper limit -48500 lower limit
 

@@ -45,6 +45,7 @@ public class RobotContainer {
     private final Wrist s_Wrist = Wrist.getInstance();
     private final Flipper s_Flipper = Flipper.getInstance();
     private final Intake s_Intake = Intake.getInstance();
+    private final Limelight s_Limelight = Limelight.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -90,6 +91,8 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        s_Limelight.setIPDetails();
     }
 
     /**

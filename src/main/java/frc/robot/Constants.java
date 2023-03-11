@@ -160,8 +160,14 @@ public final class Constants {
         public static final double ki = 0;
         public static final double kd = 0;
 
+        //FeedForward Values ks, kg, kv, ka
+        public static final double ks = 0;
+        public static final double kg = 0.15;
+        public static final double kv = 2.83;
+        public static final double ka = 0.02;
     }
 
+    //Arm Constants
     public static final class ArmConstants {
         public static final int leftArmMotorID = 16;
         public static final int rightArmMotorID = 17;
@@ -170,10 +176,18 @@ public final class Constants {
          public static final double kp = 0.01;
          public static final double ki = 0;
          public static final double kd = 0;
+
+         //FeedForward Values ks, kg, kv, ka
+         public static final double ksIntakePos = 0;
+         public static final double kgIntakePos = 0.28;
+         public static final double kvIntakePos = 2.69;
+         public static final double kaIntakePos = 0.02;
     }
 
     public static final class WristConstants {
         public static final int wristMotorID = 18;
+        
+        public static final double wristTestPos = 10000;
 
          //PID Controller Values
          public static final double kp = 0.01;
@@ -183,6 +197,8 @@ public final class Constants {
 
     public static final class FlipperConstants {
         public static final int flipperMotorID = 19;
+
+        public static final double flipperTestPos = 10000;
 
          //PID Controller Values
          public static final double kp = 0.01;

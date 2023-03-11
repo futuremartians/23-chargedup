@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.FlipperConstants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -100,11 +102,8 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-       // operator.povUp().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
-        //operator.povDown().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
-        
-        //54240 upper limit -48500 lower limit
-
+        operator.povUp().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristTestPos));
+        operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperTestPos));
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

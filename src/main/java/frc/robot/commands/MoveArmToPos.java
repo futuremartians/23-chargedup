@@ -18,13 +18,13 @@ public class MoveArmToPos extends CommandBase {
   ArmFeedforward feedforwardControl;
   private double pos;
 
-  public MoveArmToPos(Arm s_Arm, double pos) {
+  public MoveArmToPos(Arm s_Arm, double pos, double ks, double kg, double kv, double ka) {
     this.pos = pos;
     this.s_Arm = s_Arm;
     this.pidController = new PIDController(ArmConstants.kp,ArmConstants.ki,ArmConstants.kd);
     pidController.setSetpoint(pos);
     
-    feedforwardControl = new ArmFeedforward(0, 0.15, 2.83, 0.02);
+    feedforwardControl = new ArmFeedforward(ks, kg, kv, ka);
     addRequirements(s_Arm);
     
 }
@@ -41,28 +41,15 @@ public class MoveArmToPos extends CommandBase {
     double feedforward;
     double voltage;
 
-    if (s_Arm.getMotorPosition() < pidController.getSetpoint()) {
       if (Math.abs(pidController.getPositionError()) > 1000) {
          pidController.setTolerance(1000);
       feedforward = feedforwardControl.calculate(pos, 0.4, 0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), 0, 3.5);
+      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), -2.5, 2.5);
       } else {
           pidController.setTolerance(0);
-          feedforward = feedforwardControl.calculate(pos, 0.2, 0.3);
-         voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()), -0.5, 0.9);
+          feedforward = feedforwardControl.calculate(pos, 0.2, 0.2);
+         voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()), -1.3, 1.3);
       }
-  } else {
-    if (Math.abs(pidController.getPositionError()) > 1000) {
-      pidController.setTolerance(1000);
-      feedforward = feedforwardControl.calculate(-0.3);
-      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition() + feedforward), -1.5, 0);
-    } else {
-      pidController.setTolerance(0);
-      feedforward = feedforwardControl.calculate(-0.1);
-      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()), -0.5, 0.9);
-    }
-  }
-
     s_Arm.setArmVoltage(voltage);
   }
 

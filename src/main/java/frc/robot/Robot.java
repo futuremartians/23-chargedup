@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    CommandScheduler.getInstance().schedule(m_robotContainer.goToDriverPosFromBottom);
     SmartDashboard.putString("StatusNormal", "Robot Init");
   }
 

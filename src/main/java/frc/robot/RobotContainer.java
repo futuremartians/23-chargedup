@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -47,6 +48,25 @@ public class RobotContainer {
     private final Flipper s_Flipper = Flipper.getInstance();
     private final Intake s_Intake = Intake.getInstance();
     private final Limelight s_Limelight;
+
+    /*Command Groups*/
+    private final Command goToHighPoleScoringPos = Commands.sequence(Commands.parallel(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
+    Commands.sequence(Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
+    new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos)), 
+    Commands.parallel(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos), 
+    new MoveArmToPos(s_Arm, ArmConstants.armReadyForScoringPos), 
+    new MoveWristToPos(s_Wrist, WristConstants.wristReadyForScoringPos)))), 
+    Commands.sequence(Commands.parallel(new MoveArmToPos(s_Arm, ArmConstants.armScoringPos), 
+    new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPos)), new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos)));
+
+    public final Command goToDriverPosFromBottom = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, 0),
+        new MoveElevatorToPos(s_Elevator, 0), 
+        new MoveWristToPos(s_Wrist, 0), 
+        new MoveFlipperToPos(s_Flipper, 0)
+    );
+
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -115,14 +135,18 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.povUp().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristTestPos));
-        operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperTestPos));
+        operator.povUp().onTrue(Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
+        new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos)));
+
+        operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
         operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
         operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
-        operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos, ElevatorConstants.ks, ElevatorConstants.kg, ElevatorConstants.kv, ElevatorConstants.ka));
-        operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, ElevatorConstants.ks, ElevatorConstants.kg, ElevatorConstants.kv, ElevatorConstants.ka));
-        operator.rightBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, ArmConstants.ksIntakePos, ArmConstants.kgIntakePos, ArmConstants.kvIntakePos, ArmConstants.kaIntakePos));
-        operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.drivePos, ArmConstants.ksIntakePos, ArmConstants.kgIntakePos, ArmConstants.kvIntakePos, ArmConstants.kaIntakePos));
+        operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
+        operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
+        operator.rightBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos));
+        operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));
+
+        operator.b().onTrue(goToHighPoleScoringPos);
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

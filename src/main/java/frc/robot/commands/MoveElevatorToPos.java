@@ -17,12 +17,12 @@ public class MoveElevatorToPos extends CommandBase {
   PIDController pidController;
   ElevatorFeedforward feedforwardControl;
 
-  public MoveElevatorToPos(Elevator s_elevator, double pos, double ks, double kg, double kv, double ka) {
+  public MoveElevatorToPos(Elevator s_elevator, double pos) {
     this.s_elevator = s_elevator;
     this.pidController = new PIDController(ElevatorConstants.kp,ElevatorConstants.ki,ElevatorConstants.kd);
     pidController.setSetpoint(pos);
     
-    feedforwardControl = new ElevatorFeedforward(ks, kg, kv, ka);
+    feedforwardControl = new ElevatorFeedforward(ElevatorConstants.ks, ElevatorConstants.kg, ElevatorConstants.kv, ElevatorConstants.ka);
     addRequirements(s_elevator);
     
 }

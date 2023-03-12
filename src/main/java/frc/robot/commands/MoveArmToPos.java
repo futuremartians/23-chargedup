@@ -18,13 +18,13 @@ public class MoveArmToPos extends CommandBase {
   ArmFeedforward feedforwardControl;
   private double pos;
 
-  public MoveArmToPos(Arm s_Arm, double pos, double ks, double kg, double kv, double ka) {
+  public MoveArmToPos(Arm s_Arm, double pos) {
     this.pos = pos;
     this.s_Arm = s_Arm;
     this.pidController = new PIDController(ArmConstants.kp,ArmConstants.ki,ArmConstants.kd);
     pidController.setSetpoint(pos);
     
-    feedforwardControl = new ArmFeedforward(ks, kg, kv, ka);
+    feedforwardControl = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
     addRequirements(s_Arm);
     
 }

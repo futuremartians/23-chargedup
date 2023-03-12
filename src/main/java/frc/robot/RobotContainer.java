@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FlipperConstants;
 import frc.robot.Constants.WristConstants;
@@ -45,10 +46,12 @@ public class RobotContainer {
     private final Wrist s_Wrist = Wrist.getInstance();
     private final Flipper s_Flipper = Flipper.getInstance();
     private final Intake s_Intake = Intake.getInstance();
-    private final Limelight s_Limelight = Limelight.getInstance();
+    private final Limelight s_Limelight;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
+        s_Limelight = Limelight.getInstance();
 
         s_Swerve.resetOdometry(new Pose2d());
         s_Swerve.zeroGyro();
@@ -61,14 +64,14 @@ public class RobotContainer {
                 () -> false
             )
         );
-       /*  s_elevator.setDefaultCommand(
+         s_Elevator.setDefaultCommand(
             new ElevatorJoystick(
-                s_elevator, 
+                s_Elevator, 
                 () -> -operator.getRightY()*0.4
             )
-        );*/
+        );
 
-        /*s_Arm.setDefaultCommand(
+       /* s_Arm.setDefaultCommand(
             new ArmJoystick(
                 s_Arm, 
                 () -> -operator.getRightY()*0.4
@@ -78,7 +81,7 @@ public class RobotContainer {
         s_Wrist.setDefaultCommand(
             new WristJoystick(
                 s_Wrist, 
-                () -> -operator.getRightY()*0.4
+                () -> -operator.getLeftY()*0.4
             )
         );
 
@@ -86,6 +89,12 @@ public class RobotContainer {
             new FlipperJoystick(
                 s_Flipper, 
                 () -> -operator.getLeftX()*0.2
+            )
+        );
+
+        s_Intake.setDefaultCommand(
+            new spinIntake(s_Intake,
+             () -> 0
             )
         );
 
@@ -108,8 +117,12 @@ public class RobotContainer {
         /* Operator Buttons */
         operator.povUp().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristTestPos));
         operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperTestPos));
-        operator.rightTrigger().onTrue(new InstantCommand(() -> s_Intake.spinIntake(0.5)));
-        operator.leftTrigger().onTrue(new InstantCommand(() -> s_Intake.spinIntake(-0.5)));
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
+        operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos, ElevatorConstants.ks, ElevatorConstants.kg, ElevatorConstants.kv, ElevatorConstants.ka));
+        operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, ElevatorConstants.ks, ElevatorConstants.kg, ElevatorConstants.kv, ElevatorConstants.ka));
+        operator.rightBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, ArmConstants.ksIntakePos, ArmConstants.kgIntakePos, ArmConstants.kvIntakePos, ArmConstants.kaIntakePos));
+        operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.drivePos, ArmConstants.ksIntakePos, ArmConstants.kgIntakePos, ArmConstants.kvIntakePos, ArmConstants.kaIntakePos));
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

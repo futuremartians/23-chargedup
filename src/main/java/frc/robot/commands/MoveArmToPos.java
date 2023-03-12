@@ -41,14 +41,14 @@ public class MoveArmToPos extends CommandBase {
     double feedforward;
     double voltage;
 
-      if (Math.abs(pidController.getPositionError()) > 1000) {
-         pidController.setTolerance(1000);
+      if (Math.abs(pidController.getPositionError()) > 5000) {
+         pidController.setTolerance(5000);
       feedforward = feedforwardControl.calculate(pos, 0.4, 0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), -2.5, 2.5);
+      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), -3.5, 3.5);
       } else {
           pidController.setTolerance(0);
-          feedforward = feedforwardControl.calculate(pos, 0.2, 0.2);
-         voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()), -1.3, 1.3);
+          //feedforward = feedforwardControl.calculate(pos, 0.2, 0.2);
+         voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()), -0.9, 0.9);
       }
     s_Arm.setArmVoltage(voltage);
   }

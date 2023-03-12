@@ -40,7 +40,7 @@ public class MoveWristToPos extends CommandBase {
 
       if (Math.abs(pidController.getPositionError()) > 1000) {
          pidController.setTolerance(1000);
-         voltage = MathUtil.clamp(pidController.calculate(s_Wrist.getMotorPosition()), -3.5, 3.5);
+         voltage = MathUtil.clamp(pidController.calculate(s_Wrist.getMotorPosition()), -2.75, 2.75);
       } else {
           pidController.setTolerance(0);
           voltage = MathUtil.clamp(pidController.calculate(s_Wrist.getMotorPosition()), -1, 1);

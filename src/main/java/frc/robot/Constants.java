@@ -152,7 +152,7 @@ public final class Constants {
         public static final int leftElevatorMotorID = 14;
         public static final int rightElevatorMotorID = 15;
 
-        public static final int elevatorUpPos = 80000;
+        public static final int elevatorUpPos = 92500;
         public static final int elevatorDownPos = 0;
 
         //PID Controller Values
@@ -172,8 +172,11 @@ public final class Constants {
         public static final int leftArmMotorID = 16;
         public static final int rightArmMotorID = 17;
 
+        public static final double intakeDownPos = -44000;
+        public static final double drivePos = 0;
+
          //PID Controller Values
-         public static final double kp = 0.01;
+         public static final double kp = 0.005;
          public static final double ki = 0;
          public static final double kd = 0;
 
@@ -187,10 +190,10 @@ public final class Constants {
     public static final class WristConstants {
         public static final int wristMotorID = 18;
         
-        public static final double wristTestPos = 10000;
+        public static final double wristTestPos = -10000;
 
          //PID Controller Values
-         public static final double kp = 0.01;
+         public static final double kp = 0.03;
          public static final double ki = 0;
          public static final double kd = 0;
     }

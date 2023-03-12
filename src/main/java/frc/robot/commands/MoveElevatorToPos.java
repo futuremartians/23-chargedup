@@ -43,7 +43,7 @@ public class MoveElevatorToPos extends CommandBase {
       if (Math.abs(pidController.getPositionError()) > 1000) {
          pidController.setTolerance(1000);
       feedforward = feedforwardControl.calculate(0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()+ feedforward), 0, 3.5);
+      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()+ feedforward), 0, 3);
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);

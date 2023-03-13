@@ -17,9 +17,11 @@ public class MoveArmToPos extends CommandBase {
   PIDController pidController;
   ArmFeedforward feedforwardControl;
   private double pos;
+  private double maxVoltage;
 
-  public MoveArmToPos(Arm s_Arm, double pos) {
+  public MoveArmToPos(Arm s_Arm, double pos, double maxVoltage) {
     this.pos = pos;
+    this.maxVoltage = maxVoltage;
     this.s_Arm = s_Arm;
     this.pidController = new PIDController(ArmConstants.kp,ArmConstants.ki,ArmConstants.kd);
     pidController.setSetpoint(pos);
@@ -44,7 +46,7 @@ public class MoveArmToPos extends CommandBase {
       if (Math.abs(pidController.getPositionError()) > 5000) {
          pidController.setTolerance(5000);
       feedforward = feedforwardControl.calculate(pos, 0.4, 0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), -3.5, 3.5);
+      voltage = MathUtil.clamp(pidController.calculate(s_Arm.getMotorPosition()+ feedforward), -maxVoltage, maxVoltage);
       } else {
           pidController.setTolerance(0);
           //feedforward = feedforwardControl.calculate(pos, 0.2, 0.2);

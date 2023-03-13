@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ArmConstants;
@@ -50,21 +52,28 @@ public class RobotContainer {
     private final Limelight s_Limelight;
 
     /*Command Groups*/
-    private final Command goToHighPoleScoringPos = Commands.sequence(Commands.parallel(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
+    /*private final Command goToHighPoleScoringPos = Commands.sequence(Commands.parallel(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
     Commands.sequence(Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
     new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos)), 
     Commands.parallel(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos), 
     new MoveArmToPos(s_Arm, ArmConstants.armReadyForScoringPos), 
     new MoveWristToPos(s_Wrist, WristConstants.wristReadyForScoringPos)))), 
     Commands.sequence(Commands.parallel(new MoveArmToPos(s_Arm, ArmConstants.armScoringPos), 
-    new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPos)), new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos)));
+    new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPos)), new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos)));*/
 
     public final Command goToDriverPosFromBottom = 
+    Commands.sequence(
     Commands.parallel(
-        new MoveArmToPos(s_Arm, 0),
+        new MoveArmToPos(s_Arm, 0, 2),
         new MoveElevatorToPos(s_Elevator, 0), 
-        new MoveWristToPos(s_Wrist, 0), 
         new MoveFlipperToPos(s_Flipper, 0)
+    )//,
+    //new MoveWristToPos(s_Wrist, 0, 3, 1)
+    );
+
+    public final Command goToBottomIntakePos = 
+    new ParallelCommandGroup( new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, 1.4), 
+    new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 3, 3.8)
     );
 
 
@@ -84,26 +93,26 @@ public class RobotContainer {
                 () -> false
             )
         );
-         s_Elevator.setDefaultCommand(
+        /*  s_Elevator.setDefaultCommand(
             new ElevatorJoystick(
                 s_Elevator, 
                 () -> -operator.getRightY()*0.4
             )
-        );
+        );*/
 
-       /* s_Arm.setDefaultCommand(
+        s_Arm.setDefaultCommand(
             new ArmJoystick(
                 s_Arm, 
                 () -> -operator.getRightY()*0.4
             )
-        );*/
+        );
 
-        s_Wrist.setDefaultCommand(
+       /*  s_Wrist.setDefaultCommand(
             new WristJoystick(
                 s_Wrist, 
                 () -> -operator.getLeftY()*0.4
             )
-        );
+        );*/
 
         s_Flipper.setDefaultCommand(
             new FlipperJoystick(
@@ -116,6 +125,11 @@ public class RobotContainer {
             new spinIntake(s_Intake,
              () -> 0
             )
+        );
+
+        s_Wrist.setDefaultCommand(
+            new HoldWristAtPos(s_Wrist,  
+            1)
         );
 
         // Configure the button bindings
@@ -135,18 +149,20 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.povUp().onTrue(Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
-        new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos)));
+        operator.povUp().onTrue(goToDriverPosFromBottom);
+        //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
+        //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
         operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
-        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
-        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 0.5));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.5));
         operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
         operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
-        operator.rightBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos));
-        operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));
+        operator.rightBumper().onTrue(goToBottomIntakePos);
+        operator.povRight().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
+        //operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));
 
-        operator.b().onTrue(goToHighPoleScoringPos);
+        //operator.b().onTrue(goToHighPoleScoringPos);
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

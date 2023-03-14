@@ -49,7 +49,7 @@ public class RobotContainer {
     private final Wrist s_Wrist = Wrist.getInstance();
     private final Flipper s_Flipper = Flipper.getInstance();
     private final Intake s_Intake = Intake.getInstance();
-    private final Limelight s_Limelight;
+    //private final Limelight s_Limelight;
 
     /*Command Groups*/
     private final Command goToHighPoleScoringPos = 
@@ -105,7 +105,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
-        s_Limelight = Limelight.getInstance();
+       //s_Limelight = Limelight.getInstance();
 
         s_Swerve.resetOdometry(new Pose2d());
         s_Swerve.zeroGyro();
@@ -155,7 +155,7 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        s_Limelight.setIPDetails();
+        //s_Limelight.setIPDetails();
     }
 
     /**

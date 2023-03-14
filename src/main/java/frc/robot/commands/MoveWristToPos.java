@@ -46,7 +46,7 @@ public class MoveWristToPos extends CommandBase {
          pidController.setTolerance(1000);
          voltage = MathUtil.clamp(pidController.calculate(s_Wrist.getMotorPosition()), -maxVoltage, maxVoltage);
       } else {
-          pidController.setTolerance(500);
+          pidController.setTolerance(0);
           voltage = MathUtil.clamp(pidController.calculate(s_Wrist.getMotorPosition()), -stallVoltage, stallVoltage);
       }
     s_Wrist.setWristVoltage(voltage);
@@ -55,12 +55,12 @@ public class MoveWristToPos extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    WristConstants.holdPos = pos;
+    
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return false;
   }
 }

@@ -73,7 +73,7 @@ public class RobotContainer {
 
     public final Command goToBottomIntakePos = 
     new ParallelCommandGroup( new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, 1.4), 
-    new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 3, 3.8)
+    new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1, 2)
     );
 
 
@@ -107,12 +107,12 @@ public class RobotContainer {
             )
         );
 
-       /*  s_Wrist.setDefaultCommand(
+         s_Wrist.setDefaultCommand(
             new WristJoystick(
                 s_Wrist, 
                 () -> -operator.getLeftY()*0.4
             )
-        );*/
+        );
 
         s_Flipper.setDefaultCommand(
             new FlipperJoystick(
@@ -125,11 +125,6 @@ public class RobotContainer {
             new spinIntake(s_Intake,
              () -> 0
             )
-        );
-
-        s_Wrist.setDefaultCommand(
-            new HoldWristAtPos(s_Wrist,  
-            1)
         );
 
         // Configure the button bindings
@@ -149,14 +144,26 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.povUp().onTrue(goToDriverPosFromBottom);
+        operator.x().onTrue(goToDriverPosFromBottom);
         //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
         operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
         operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 0.5));
         operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.5));
-        operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
+        operator.povLeft().onTrue(
+            Commands.parallel(
+                new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
+                //new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
+                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPos, 1.4, 1),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 1.4)
+                )
+                );
+        operator.povUp().onTrue(
+            Commands.parallel(
+            new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 2, 1.2),
+            new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 2)
+        ));
         operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
         operator.rightBumper().onTrue(goToBottomIntakePos);
         operator.povRight().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));

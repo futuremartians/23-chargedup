@@ -50,6 +50,7 @@ public class RobotContainer {
     private final Flipper s_Flipper = Flipper.getInstance();
     private final Intake s_Intake = Intake.getInstance();
     //private final Limelight s_Limelight;
+    private final Camera s_Camera;
 
     /*Command Groups*/
     private final Command goToHighPoleScoringPos = 
@@ -106,6 +107,7 @@ public class RobotContainer {
     public RobotContainer() {
 
        //s_Limelight = Limelight.getInstance();
+       s_Camera = Camera.getInstance();
 
         s_Swerve.resetOdometry(new Pose2d());
         s_Swerve.zeroGyro();

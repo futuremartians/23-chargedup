@@ -38,12 +38,12 @@ public class MoveFlipperToPos extends CommandBase {
     double feedforward;
     double voltage;
 
-      if (Math.abs(pidController.getPositionError()) > 1000) {
-         pidController.setTolerance(1000);
-         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -1.5, 1.5);
+      if (Math.abs(pidController.getPositionError()) > 2000) {
+         pidController.setTolerance(2000);
+         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -1.8, 1.8);
       } else {
           pidController.setTolerance(0);
-          voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -0.5, 0.5);
+          voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -0.75, 0.75);
       }
     s_Flipper.setFlipperVoltage(voltage);
   }

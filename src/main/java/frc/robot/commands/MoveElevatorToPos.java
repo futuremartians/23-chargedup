@@ -47,13 +47,13 @@ public class MoveElevatorToPos extends CommandBase {
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);
-         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.5, 0.9);
+         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.7, 0.9);
       }
   } else {
     if (Math.abs(pidController.getPositionError()) > 1000) {
       pidController.setTolerance(1000);
       feedforward = feedforwardControl.calculate(-0.3);
-      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition() + feedforward), -1.5, 0);
+      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition() + feedforward), -2, 0);
     } else {
       pidController.setTolerance(0);
       feedforward = feedforwardControl.calculate(-0.1);

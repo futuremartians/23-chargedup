@@ -73,7 +73,7 @@ public class RobotContainer {
 
     public final Command goToBottomIntakePos = 
     new ParallelCommandGroup( new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, 1.4), 
-    new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1, 2)
+    new WristPID(s_Wrist, WristConstants.wristIntakeBottomPos, 1, 2)
     );
 
 
@@ -155,18 +155,19 @@ public class RobotContainer {
             Commands.parallel(
                 new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
                 //new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
-                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPos, 1.4, 1),
+                new WristPID(s_Wrist, WristConstants.wristUnderElevatorPos, 1.4, 1),
                 new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 1.4)
                 )
                 );
         operator.povUp().onTrue(
             Commands.parallel(
-            new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 2, 1.2),
+            new WristPID(s_Wrist, WristConstants.wristScoringPos, 2, 1.2),
             new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 2)
         ));
         operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
         operator.rightBumper().onTrue(goToBottomIntakePos);
-        operator.povRight().onTrue(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
+        operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
+        operator.b().onTrue(new MoveWristToPos(s_Wrist, -8000, 2.5, 1).andThen(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos)));
         //operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));
 
         //operator.b().onTrue(goToHighPoleScoringPos);

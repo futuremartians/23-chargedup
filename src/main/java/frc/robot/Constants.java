@@ -199,10 +199,10 @@ public final class Constants {
         public static final double wristAfterFlipPos = -2000;
         public static final double wristDrivePos = 0;//Done
         public static final double wristUnderElevatorPt1Pos = -43000;
-        public static final double wristUnderElevatorPt2Pos = -82500;
-        public static final double wristUnderElevatorPt3Pos = -95000;
-        public static final double wristScoringPos = -58000;
+        public static final double wristUnderElevatorPt2Pos = -95000;
+        public static final double wristScoringPos = -60000;
         public static final double wristIntakeBottomPos = -4000;
+        public static final double wristBeforeScoringPos = -80000;
 
          //PID Controller Values
          public static final double kp = 0.01;
@@ -214,7 +214,7 @@ public final class Constants {
         public static final int flipperMotorID = 19;
 
         public static final double flipperDrivePos = 0;
-        public static final double flipperScoringPos = -25100;
+        public static final double flipperScoringPos = -26000;
 
          //PID Controller Values
          public static final double kp = 0.035;

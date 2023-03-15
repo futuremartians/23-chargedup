@@ -68,20 +68,16 @@ public class RobotContainer {
                 Commands.sequence(
                     Commands.waitSeconds(0.4),
                     Commands.parallel(
-                    Commands.sequence(
-                        Commands.waitSeconds(0.2),
-                    new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 3.2)
-                    ),
-                    Commands.sequence(
-                        new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt3Pos, 2.7, 1),
-                        Commands.waitSeconds(1),
-                        new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 3, 1.1)
+                        new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 3.2),
+                        Commands.sequence(
+                            Commands.waitSeconds(0.9),
+                            new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 1.9, 0.9)
+                            ))
                     )
                     )
                 )
-            ) 
-        )
-    );
+            );
+    
 
     public final Command goToDriverPosFromTop = 
     Commands.sequence(

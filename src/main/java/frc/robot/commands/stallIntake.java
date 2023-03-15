@@ -5,40 +5,40 @@
 package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-public class spinIntake extends CommandBase {
-  private final Intake s_Intake;
-  private DoubleSupplier intakeSpeed;
+public class stallIntake extends CommandBase {
 
-  /** Creates a new IntakeJoystick. */
-  public spinIntake(Intake s_Intake, DoubleSupplier intakeSpeed) {
+  private final Intake s_Intake;
+  private BooleanSupplier intakeCone;
+
+  /** Creates a new stallIntake. */
+  public stallIntake(Intake s_Intake, BooleanSupplier intakeCone) {
     this.s_Intake = s_Intake;
-    this.intakeSpeed = intakeSpeed;
+    this.intakeCone = intakeCone;
     addRequirements(s_Intake);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Intake.spinIntake(intakeSpeed.getAsDouble());
+    if (intakeCone.getAsBoolean()) {
+      s_Intake.spinIntake(0.15);
+    } else {
+      s_Intake.spinIntake(-0.15);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    s_Intake.spinIntake(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

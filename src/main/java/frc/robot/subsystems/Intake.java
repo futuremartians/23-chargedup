@@ -26,6 +26,14 @@ public class Intake extends SubsystemBase {
     spinRollersMotor.set(speed);
   }
 
+  public double intakeSpeed(boolean coneIntake) {
+    if (coneIntake) {
+      return 0.3;
+    } else {
+      return -0.3;
+    }
+  }
+
   @Override
   public void periodic() {
     

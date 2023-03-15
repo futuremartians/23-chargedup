@@ -30,6 +30,9 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
+    private boolean intakeCone;
+
+
     /* Drive Controls 
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -58,12 +61,23 @@ public class RobotContainer {
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
         Commands.sequence(
             Commands.waitSeconds(0.2), 
-            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2, 1),
+            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
             Commands.parallel(
-                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.5, 1),
+                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.7, 1),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPt1Pos, 2.4),
                 Commands.sequence(
-                    new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 1.6),
-                    new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 3.5, 1.2)
+                    Commands.waitSeconds(0.4),
+                    Commands.parallel(
+                    Commands.sequence(
+                        Commands.waitSeconds(0.2),
+                    new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 3.2)
+                    ),
+                    Commands.sequence(
+                        new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt3Pos, 2.7, 1),
+                        Commands.waitSeconds(1),
+                        new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 3, 1.1)
+                    )
+                    )
                 )
             ) 
         )
@@ -149,8 +163,8 @@ public class RobotContainer {
         );
 
         s_Intake.setDefaultCommand(
-            new spinIntake(s_Intake,
-             () -> 0
+            new stallIntake(s_Intake,
+             () -> intakeCone
             )
         );
 
@@ -176,20 +190,26 @@ public class RobotContainer {
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
         operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
-        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 0.5));
-        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.5));
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 0.75));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.75));
+
+        operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
+        operator.leftTrigger().whileTrue(new InstantCommand(() -> intakeCone = false));
         operator.povLeft().onTrue(
             Commands.parallel(
-                new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos), 
+                new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos)
                 //new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
                // new WristPID(s_Wrist, WristConstants.wristUnderElevatorPos, 1.4, 1),
-                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 1.4)
+                //new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 1.4)
                 )
                 );
         operator.rightBumper().onTrue(Commands.sequence(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
-            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos)
-            ));
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
+        )
+        );
         operator.povUp().onTrue(goToHighPoleScoringPos); 
         
         operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));

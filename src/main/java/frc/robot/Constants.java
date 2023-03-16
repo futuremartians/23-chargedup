@@ -172,11 +172,12 @@ public final class Constants {
         public static final int leftArmMotorID = 16;
         public static final int rightArmMotorID = 17;
 
-        public static final double intakeDownPos = -43000;//Done
+        public static final double armGroundIntakePos = -45000;//Done
         public static final double armDrivePos = 0;//Done
         public static final double armReadyToFlipPos = -10000;
-        public static final double armUnderElevatorPt1Pos = -18000;
-        public static final double armScoringPos = -112000;
+        public static final double armUnderElevatorPos = -18000;
+        public static final double armHighNodeScoringPos = -110000;
+        public static final double armMediumNodeScoringPos = 0;
 
          //PID Controller Values
          public static final double kp = 0.005;
@@ -200,9 +201,10 @@ public final class Constants {
         public static final double wristDrivePos = 0;//Done
         public static final double wristUnderElevatorPt1Pos = -43000;
         public static final double wristUnderElevatorPt2Pos = -95000;
-        public static final double wristScoringPos = -60000;
-        public static final double wristIntakeBottomPos = -4000;
+        public static final double wristHighNodeScoringPos = -58000;
+        public static final double wristIntakeBottomPos = -13500;
         public static final double wristBeforeScoringPos = -80000;
+        public static final double wristMediumNodeScoringPos = 0;
 
          //PID Controller Values
          public static final double kp = 0.01;

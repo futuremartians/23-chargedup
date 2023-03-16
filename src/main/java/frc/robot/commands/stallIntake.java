@@ -30,9 +30,9 @@ public class stallIntake extends CommandBase {
   @Override
   public void execute() {
     if (intakeCone.getAsBoolean()) {
-      s_Intake.spinIntake(0.15);
+      s_Intake.spinIntake(0.2);
     } else {
-      s_Intake.spinIntake(-0.15);
+      s_Intake.spinIntake(-0.2);
     }
   }
 

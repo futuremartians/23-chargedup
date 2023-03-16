@@ -31,6 +31,7 @@ public class RobotContainer {
     private final CommandXboxController operator = new CommandXboxController(1);
 
     private boolean intakeCone;
+    private int errorsOccurred = 0;
 
 
     /* Drive Controls 
@@ -56,7 +57,7 @@ public class RobotContainer {
     private final Camera s_Camera;
 
     /*Command Groups*/
-    private final Command goToHighPoleScoringPos = 
+    private final Command goToHighNodeScoringPos = 
     Commands.parallel(
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
         Commands.sequence(
@@ -64,14 +65,14 @@ public class RobotContainer {
             new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
             Commands.parallel(
                 new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.7, 1),
-                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPt1Pos, 2.4),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 2.4),
                 Commands.sequence(
                     Commands.waitSeconds(0.4),
                     Commands.parallel(
-                        new MoveArmToPos(s_Arm, ArmConstants.armScoringPos, 3.2),
+                        new MoveArmToPos(s_Arm, ArmConstants.armHighNodeScoringPos, 3.2),
                         Commands.sequence(
                             Commands.waitSeconds(0.9),
-                            new MoveWristToPos(s_Wrist, WristConstants.wristScoringPos, 1.9, 0.9)
+                            new MoveWristToPos(s_Wrist, WristConstants.wristHighNodeScoringPos, 1.9, 0.9)
                             ))
                     )
                     )
@@ -82,38 +83,57 @@ public class RobotContainer {
     public final Command goToDriverPosFromTop = 
     Commands.sequence(
         Commands.parallel(
-            Commands.parallel(
-            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 0),
-            new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 3.5, 0.9)
-            ),
+            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 2.25, 1),
             Commands.sequence(
-                Commands.waitSeconds(1.25),
-                new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos)
+                Commands.waitSeconds(0.2),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 3.2)
             )
         ),
-        Commands.sequence(
-            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos),
-            new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 2, 0.9)
-        )
+        Commands.parallel(
+            new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos),
+            Commands.parallel(
+                new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 2.8),
+                Commands.sequence(
+                    Commands.parallel(
+                    new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
+                    new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos)
+                    ),
+                    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.8, 0.9)
+                )
+            )
+        ),
+        new MoveWristToPos(s_Wrist, 0, 0, 0)
     );
 
     public final Command goToDriverPosFromBottom = 
     Commands.sequence(
     Commands.parallel(
-        new MoveArmToPos(s_Arm, 0, 2),
+        new MoveArmToPos(s_Arm, 0, 3),
         new MoveElevatorToPos(s_Elevator, 0), 
-        new MoveFlipperToPos(s_Flipper, 0)
-    )//,
-    //new MoveWristToPos(s_Wrist, 0, 3, 1)
+        new MoveFlipperToPos(s_Flipper, 0),
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1)
+    ),
+    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
     );
 
     public final Command goToBottomIntakePos = 
-    new ParallelCommandGroup( new MoveArmToPos(s_Arm, ArmConstants.intakeDownPos, 1.4), 
-    new WristPID(s_Wrist, WristConstants.wristIntakeBottomPos, 1, 2)
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 1.75),
+        new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1.8, 1)
     );
 
+    private final Command goToMediumNodeScoringPos = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 2.9),
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 2.25, 1)
+    );
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    private final Command goToSubstationConeIntakePos = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 2.9),
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 2.25, 1)
+    );
+        /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
        //s_Limelight = Limelight.getInstance();
@@ -181,34 +201,27 @@ public class RobotContainer {
         driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
-        operator.x().onTrue(goToDriverPosFromBottom);
         //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
-        operator.povDown().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
-        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 0.75));
-        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.75));
+        operator.povDown().onTrue((s_Elevator.getMotorPosition() > 7000)? goToDriverPosFromTop : goToDriverPosFromBottom);
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
 
         operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
         operator.leftTrigger().whileTrue(new InstantCommand(() -> intakeCone = false));
-        operator.povLeft().onTrue(
-            Commands.parallel(
-                new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos)
-                //new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
-               // new WristPID(s_Wrist, WristConstants.wristUnderElevatorPos, 1.4, 1),
-                //new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 1.4)
-                )
-                );
-        operator.rightBumper().onTrue(Commands.sequence(
+        operator.rightBumper().onTrue((s_Elevator.getMotorPosition() < 7000)? Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
             new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
-        )
+        ) : new InstantCommand(() -> errorsOccurred++)
         );
-        operator.povUp().onTrue(goToHighPoleScoringPos); 
+        operator.povUp().onTrue(((s_Flipper.getMotorPosition() < -19000) && (s_Elevator.getMotorPosition() < 7000))? goToHighNodeScoringPos : new InstantCommand(() -> errorsOccurred++)); 
         
-        operator.a().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos));
+        //-45000 arm, -13500
+        operator.leftBumper().onTrue((s_Elevator.getMotorPosition() < 7000)? goToBottomIntakePos : new InstantCommand(() -> errorsOccurred++));
+        operator.a().onTrue(((s_Wrist.getMotorPosition() > -35000) && s_Arm.getMotorPosition() > -20000)? new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos) : new InstantCommand(() -> errorsOccurred++));
        // operator.rightBumper().onTrue(goToBottomIntakePos);
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
         operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));

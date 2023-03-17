@@ -99,15 +99,16 @@ public Command getChosenAuto() {
         return lastCommand;
      }
 
-     public static void forwardUntilCommand(double distance, double speed){
+     public static void forwardUntilCommand(double time, double speed){
         
-        while(s_Swerve.getPose().getX() < distance){
+        
                 s_Swerve.drive(
                         new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
                         0, 
                         true, 
                         true);
-        }
+            Commands.waitSeconds(time);
+        
         s_Swerve.drive(
                 new Translation2d(0,0), 0, true, true);
 }
@@ -115,7 +116,7 @@ public Command getChosenAuto() {
      public static Command testAuto() {
         /*PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(2.5, 2));
         return followTrajectoryCommand(traj);*/
-        return new InstantCommand(() -> forwardUntilCommand(0.3, 0.2));
+        return new InstantCommand(() -> forwardUntilCommand(2, 0.2));
      }
 
      public static Command preloadChargeCenterAuto() {

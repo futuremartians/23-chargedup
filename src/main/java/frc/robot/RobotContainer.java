@@ -58,6 +58,13 @@ public class RobotContainer {
 
     /*Command Groups*/
     private final Command goToHighNodeScoringPos = 
+    Commands.sequence(
+        Commands.sequence(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
+            new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
+        ),
     Commands.parallel(
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
         Commands.sequence(
@@ -77,7 +84,8 @@ public class RobotContainer {
                     )
                     )
                 )
-            );
+            )
+    );
     
 
     public final Command goToDriverPosFromTop = 
@@ -108,7 +116,7 @@ public class RobotContainer {
     public final Command goToDriverPosFromBottom = 
     Commands.sequence(
     Commands.parallel(
-        new MoveArmToPos(s_Arm, 0, 3),
+        new MoveArmToPos(s_Arm, 0, 2.5),
         new MoveElevatorToPos(s_Elevator, 0), 
         new MoveFlipperToPos(s_Flipper, 0),
         new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1)
@@ -117,16 +125,50 @@ public class RobotContainer {
     );
 
     public final Command goToBottomIntakePos = 
-    Commands.parallel(
-        new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 1.75),
-        new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1.8, 1)
+    Commands.sequence(
+     Commands.parallel(
+            new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 1.4),
+            Commands.sequence(
+                Commands.waitSeconds(0.3),
+                new MoveWristToPos(s_Wrist, WristConstants.wristFoldedBeforeIntake, 1.4, 1)
+            )
+     ), 
+      new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1.4, 1)
     );
 
     private final Command goToMediumNodeScoringPos = 
     Commands.parallel(
-        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 2.9),
-        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 2.25, 1)
-    );
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
+        Commands.sequence(
+            Commands.waitSeconds(0.2), 
+            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
+            Commands.parallel(
+                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.7, 1),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 2.4),
+                Commands.sequence(
+                    Commands.waitSeconds(0.4),
+                    Commands.parallel(
+                        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 3.2),
+                        Commands.sequence(
+                            Commands.waitSeconds(0.9),
+                            new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 1.9, 0.9)
+                            ))
+                    )
+                    )
+                )
+            );
+    
+    
+   /* Commands.sequence(
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1),
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 2),
+        Commands.sequence(
+        new MoveWristToPos(s_Wrist, WristConstants.wristSafeMediumNodePos, 1.4, 1),
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 2, 1)
+        )
+    )*/
+    
 
     private final Command goToSubstationConeIntakePos = 
     Commands.parallel(
@@ -204,26 +246,28 @@ public class RobotContainer {
         //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
-        operator.povDown().onTrue((s_Elevator.getMotorPosition() > 7000)? goToDriverPosFromTop : goToDriverPosFromBottom);
+        operator.povDown().onTrue(goToDriverPosFromTop);
         operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
         operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
 
         operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
         operator.leftTrigger().whileTrue(new InstantCommand(() -> intakeCone = false));
-        operator.rightBumper().onTrue((s_Elevator.getMotorPosition() < 7000)? Commands.sequence(
+        operator.rightBumper().onTrue(Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
             new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
-        ) : new InstantCommand(() -> errorsOccurred++)
+        )
         );
-        operator.povUp().onTrue(((s_Flipper.getMotorPosition() < -19000) && (s_Elevator.getMotorPosition() < 7000))? goToHighNodeScoringPos : new InstantCommand(() -> errorsOccurred++)); 
-        
+        operator.povUp().onTrue(goToHighNodeScoringPos);
+        operator.povLeft().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
-        operator.leftBumper().onTrue((s_Elevator.getMotorPosition() < 7000)? goToBottomIntakePos : new InstantCommand(() -> errorsOccurred++));
-        operator.a().onTrue(((s_Wrist.getMotorPosition() > -35000) && s_Arm.getMotorPosition() > -20000)? new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos) : new InstantCommand(() -> errorsOccurred++));
+        operator.leftBumper().onTrue(goToBottomIntakePos);
+        operator.a().onTrue(PathPlannerAutos.scorePreloadCube);
        // operator.rightBumper().onTrue(goToBottomIntakePos);
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
+       //-29000
+        operator.povRight().onTrue(goToMediumNodeScoringPos);
         operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
         operator.x().onTrue(new MoveFlipperToPos(s_Flipper, 0));
         operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));

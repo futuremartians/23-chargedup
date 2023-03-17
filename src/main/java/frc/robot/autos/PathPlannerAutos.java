@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
@@ -15,16 +16,38 @@ import java.util.List;
 import com.pathplanner.lib.PathConstraints;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Swerve;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.WristConstants;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class PathPlannerAutos {
+   private static Intake s_Intake = Intake.getInstance();
+   private static Arm s_Arm = Arm.getInstance();
+   private static Swerve s_Swerve = Swerve.getInstance();
+   private static Wrist s_Wrist = Wrist.getInstance();
 
-    private static Swerve s_Swerve = new Swerve();
     private static Command lastCommand;
+    public final static Command scorePreloadCube = 
+    Commands.sequence(
+    Commands.parallel(
+       new SpinIntakeAuto(s_Intake, -0.9, 0.2),
+       Commands.sequence(
+       Commands.parallel(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
+         )
+       )
+    ),
+    Commands.sequence(
+      new SpinIntakeAuto(s_Intake, 1, 0.8),
+      new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.4, 1)
+    )  
+    );
 
     public static void cancelLastCommand() {
         lastCommand.cancel();
@@ -47,7 +70,26 @@ public class PathPlannerAutos {
      }
 
      public static Command testAuto() {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(4, 3));
+        PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(2.5, 2));
         return followTrajectoryCommand(traj);
      }
-}
+
+     public static Command preloadChargeCenterAuto() {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("1 + charge", new PathConstraints(2.5, 2));
+        return followTrajectoryCommand(traj);
+     }
+
+     public static Command preloadMobilityCable() {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("1 + mobility", new PathConstraints(2.5, 2));
+        return followTrajectoryCommand(traj);
+     }
+
+     public static Command preloadMobilityOpen() {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("1 + mobility open", new PathConstraints(2.5, 2));
+        return followTrajectoryCommand(traj);
+     }
+
+     public static Command preloadCube() {
+      return scorePreloadCube;
+     }
+   }

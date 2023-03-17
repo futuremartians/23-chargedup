@@ -12,7 +12,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
-    public static final double stickDeadband = 0.05;
+    public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
         public static final int pigeonID = 13;
@@ -176,8 +176,9 @@ public final class Constants {
         public static final double armDrivePos = 0;//Done
         public static final double armReadyToFlipPos = -10000;
         public static final double armUnderElevatorPos = -18000;
-        public static final double armHighNodeScoringPos = -110000;
-        public static final double armMediumNodeScoringPos = 0;
+        public static final double armHighNodeScoringPos = -108000;
+        public static final double armMediumNodeScoringPos = -75000;
+        
 
          //PID Controller Values
          public static final double kp = 0.005;
@@ -201,10 +202,12 @@ public final class Constants {
         public static final double wristDrivePos = 0;//Done
         public static final double wristUnderElevatorPt1Pos = -43000;
         public static final double wristUnderElevatorPt2Pos = -95000;
-        public static final double wristHighNodeScoringPos = -58000;
-        public static final double wristIntakeBottomPos = -13500;
+        public static final double wristHighNodeScoringPos = -61500;
+        public static final double wristFoldedBeforeIntake = 15000;
+        public static final double wristIntakeBottomPos = -12000;
         public static final double wristBeforeScoringPos = -80000;
-        public static final double wristMediumNodeScoringPos = 0;
+        public static final double wristMediumNodeScoringPos = -84000;
+        public static final double wristAutoPreloadPos = -24000;
 
          //PID Controller Values
          public static final double kp = 0.01;

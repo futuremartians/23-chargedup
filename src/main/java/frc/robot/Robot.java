@@ -32,12 +32,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     ctreConfigs = new CTREConfigs();
-
-    m_chooser.addOption("Test Auto", WhichAuto.testAuto);
+    
+    m_chooser.setDefaultOption("Test Auto", WhichAuto.testAuto);
     m_chooser.addOption("Charge Center Auto", WhichAuto.charge);
     m_chooser.addOption("Preload", WhichAuto.preload);
     m_chooser.addOption("Preload Mobility Cable", WhichAuto.preloadMobilityCable);
     m_chooser.addOption("Preload Mobility Open", WhichAuto.preloadMobilityOpen);
+
+    SmartDashboard.putData(m_chooser);
 
     // Sets up the Camera to receive Frames from the USB Webcam and to
     // pass them along to the Driver Station.
@@ -67,7 +69,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = PathPlannerAutos.getAutoCommand(m_chooser.getSelected());;
+    m_autonomousCommand = PathPlannerAutos.getAutoCommand(m_chooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -99,9 +99,23 @@ public Command getChosenAuto() {
         return lastCommand;
      }
 
+     public static void forwardUntilCommand(double distance, double speed){
+        
+        while(s_Swerve.getPose().getX() < distance){
+                s_Swerve.drive(
+                        new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
+                        0, 
+                        true, 
+                        true);
+        }
+        s_Swerve.drive(
+                new Translation2d(0,0), 0, true, true);
+}
+
      public static Command testAuto() {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(2.5, 2));
-        return followTrajectoryCommand(traj);
+        /*PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(2.5, 2));
+        return followTrajectoryCommand(traj);*/
+        return new InstantCommand(() -> forwardUntilCommand(0.3, 0.2));
      }
 
      public static Command preloadChargeCenterAuto() {

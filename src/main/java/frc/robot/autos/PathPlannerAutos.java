@@ -32,6 +32,8 @@ public class PathPlannerAutos {
    private static Wrist s_Wrist = Wrist.getInstance();
 
     private static Command lastCommand;
+    private static Command chosenAuto;
+
     public final static Command scorePreloadCube = 
     Commands.sequence(
     Commands.parallel(
@@ -48,6 +50,34 @@ public class PathPlannerAutos {
       new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.4, 1)
     )  
     );
+
+    public static Command getAutoCommand(WhichAuto auto) {
+        switch (auto) {
+                case testAuto:
+                        return chosenAuto = testAuto();
+                case charge:
+                        return chosenAuto = preloadChargeCenterAuto();
+                case preload:
+                        return chosenAuto = preloadCube();
+                case preloadMobilityCable:
+                        return chosenAuto = preloadMobilityCable();
+                case preloadMobilityOpen:
+                        return chosenAuto = preloadMobilityOpen();
+        }
+        return null;
+}
+
+    public enum WhichAuto {
+        testAuto,
+        charge,
+        preload,
+        preloadMobilityCable,
+        preloadMobilityOpen
+}
+
+public Command getChosenAuto() {
+    return chosenAuto;
+}
 
     public static void cancelLastCommand() {
         lastCommand.cancel();

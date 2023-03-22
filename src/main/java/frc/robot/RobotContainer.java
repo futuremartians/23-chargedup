@@ -128,6 +128,7 @@ public class RobotContainer {
     Commands.sequence(
      Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 1.4),
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos),
             Commands.sequence(
                 Commands.waitSeconds(0.3),
                 new MoveWristToPos(s_Wrist, WristConstants.wristFoldedBeforeIntake, 1.4, 1)
@@ -137,6 +138,13 @@ public class RobotContainer {
     );
 
     private final Command goToMediumNodeScoringPos = 
+    Commands.sequence(
+        Commands.sequence(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
+            new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
+        ),
     Commands.parallel(
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
         Commands.sequence(
@@ -156,7 +164,8 @@ public class RobotContainer {
                     )
                     )
                 )
-            );
+            )
+    );
     
     
    /* Commands.sequence(
@@ -252,23 +261,26 @@ public class RobotContainer {
 
         operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
         operator.leftTrigger().whileTrue(new InstantCommand(() -> intakeCone = false));
-        operator.rightBumper().onTrue(Commands.sequence(
+        driver.rightTrigger().onTrue(Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
             new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
         )
-        );
+     );
         operator.povUp().onTrue(goToHighNodeScoringPos);
-        operator.povLeft().onTrue(goToDriverPosFromBottom);
+        driver.leftBumper().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
-        operator.leftBumper().onTrue(goToBottomIntakePos);
-        operator.a().onTrue(PathPlannerAutos.scorePreloadCube);
+        driver.rightBumper().onTrue(goToBottomIntakePos);
+        operator.a().onTrue(Commands.parallel(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
+        ));
        // operator.rightBumper().onTrue(goToBottomIntakePos);
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
        //-29000
         operator.povRight().onTrue(goToMediumNodeScoringPos);
-        operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
+        /*operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
         operator.x().onTrue(new MoveFlipperToPos(s_Flipper, 0));
         operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
         //operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));

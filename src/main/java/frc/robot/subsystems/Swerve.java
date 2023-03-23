@@ -127,8 +127,8 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-            SmartDashboard.putNumber("Robot X", swerveOdometry.getPoseMeters().getX());
-            SmartDashboard.putNumber("Robot Y", swerveOdometry.getPoseMeters().getY());
+            SmartDashboard.putNumber("Robot X", getPose().getX());
+            SmartDashboard.putNumber("Robot Y", getPose().getY());
         }
     }
 }

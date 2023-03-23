@@ -99,18 +99,12 @@ public Command getChosenAuto() {
         return lastCommand;
      }
 
-     public static void forwardUntilCommand(double time, double speed){
-        
-        
-                s_Swerve.drive(
-                        new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed), 
-                        0, 
-                        true, 
-                        true);
-            Commands.waitSeconds(time);
-        
-        s_Swerve.drive(
-                new Translation2d(0,0), 0, true, true);
+     public static void forwardUntilCommand(double distance, double speed){
+            s_Swerve.drive(
+                            new Translation2d(distance, 0),
+                            0,
+                            true,
+                            true);
 }
 
      public static Command testAuto() {

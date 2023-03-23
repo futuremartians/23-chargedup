@@ -178,6 +178,7 @@ public final class Constants {
         public static final double armUnderElevatorPos = -18000;
         public static final double armHighNodeScoringPos = -108000;
         public static final double armMediumNodeScoringPos = -75000;
+        public static final double armMediumNodeScoringIntakeSidePos = -20000;
         
 
          //PID Controller Values
@@ -207,7 +208,9 @@ public final class Constants {
         public static final double wristIntakeBottomPos = -19000;
         public static final double wristBeforeScoringPos = -80000;
         public static final double wristMediumNodeScoringPos = -84000;
+        public static final double wristMediumNodeScoringIntakeSidePos = -22000;
         public static final double wristAutoPreloadPos = -24000;
+        public static final double wristSubstationIntakePos = 35500;
 
          //PID Controller Values
          public static final double kp = 0.01;

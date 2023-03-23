@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -99,18 +100,23 @@ public Command getChosenAuto() {
         return lastCommand;
      }
 
-     public static void forwardUntilCommand(double distance, double speed){
+     public static void driveForward(double distance, double speed) {
+      double targetPose = s_Swerve.getPose().getX() + distance;
+      while (s_Swerve.getPose().getX() < targetPose) {
+         SmartDashboard.putNumber("Robot X", s_Swerve.getPose().getX());
             s_Swerve.drive(
-                            new Translation2d(distance, 0),
+                            new Translation2d(speed, 0).times(Constants.Swerve.maxSpeed),
                             0,
                             true,
                             true);
+      }
+      s_Swerve.drive(new Translation2d(0, 0).times(Constants.Swerve.maxSpeed), 0, true, true);
 }
 
      public static Command testAuto() {
         /*PathPlannerTrajectory traj = PathPlanner.loadPath("test", new PathConstraints(2.5, 2));
         return followTrajectoryCommand(traj);*/
-        return new InstantCommand(() -> forwardUntilCommand(2, 0.2));
+        return new InstantCommand(() -> driveForward(0.4, 0.2));
      }
 
      public static Command preloadChargeCenterAuto() {

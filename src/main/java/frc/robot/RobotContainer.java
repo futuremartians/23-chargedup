@@ -119,7 +119,7 @@ public class RobotContainer {
         new MoveArmToPos(s_Arm, 0, 2.5),
         new MoveElevatorToPos(s_Elevator, 0), 
         new MoveFlipperToPos(s_Flipper, 0),
-        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1)
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.7, 1)
     ),
     new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
     );
@@ -127,18 +127,18 @@ public class RobotContainer {
     public final Command goToBottomIntakePos = 
     Commands.sequence(
      Commands.parallel(
-            new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 1.4),
+            new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos),
             Commands.sequence(
                 Commands.waitSeconds(0.3),
-                new MoveWristToPos(s_Wrist, WristConstants.wristFoldedBeforeIntake, 1.4, 1)
+                new MoveWristToPos(s_Wrist, WristConstants.wristFoldedBeforeIntake, 1.6, 1)
             )
      ), 
-      new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 1.4, 1)
+      new MoveWristToPos(s_Wrist, WristConstants.wristIntakeBottomPos, 2, 1)
     );
 
     private final Command goToMediumNodeScoringPos = 
-    Commands.sequence(
+    /*Commands.sequence(
         Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
@@ -165,6 +165,10 @@ public class RobotContainer {
                     )
                 )
             )
+    )*/
+    Commands.sequence(
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringIntakeSidePos, 2.4, 1),
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringIntakeSidePos, 1.7)
     );
     
     
@@ -181,8 +185,11 @@ public class RobotContainer {
 
     private final Command goToSubstationConeIntakePos = 
     Commands.parallel(
-        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringPos, 2.9),
-        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringPos, 2.25, 1)
+        new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 2),
+        Commands.sequence(
+            Commands.waitSeconds(0.3),
+            new MoveWristToPos(s_Wrist, WristConstants.wristSubstationIntakePos, 1.8, 0.8)
+        )
     );
         /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -272,6 +279,7 @@ public class RobotContainer {
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
         driver.rightBumper().onTrue(goToBottomIntakePos);
+        driver.a().onTrue(goToSubstationConeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)

@@ -36,8 +36,10 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Test Auto", WhichAuto.testAuto);
     m_chooser.addOption("Charge Center Auto", WhichAuto.charge);
     m_chooser.addOption("Preload", WhichAuto.preload);
-    m_chooser.addOption("Preload Mobility Cable", WhichAuto.preloadMobilityCable);
-    m_chooser.addOption("Preload Mobility Open", WhichAuto.preloadMobilityOpen);
+    m_chooser.addOption("Preload Mobility Cable Cube", WhichAuto.preloadMobilityCableCube);
+    m_chooser.addOption("Preload Mobility Open Cube", WhichAuto.preloadMobilityOpenCube);
+    m_chooser.addOption("Preload Mobility Cable Cone", WhichAuto.preloadMobilityCableCone);
+    m_chooser.addOption("Preload Mobility Open Cone", WhichAuto.preloadMobilityOpenCone);
 
     SmartDashboard.putData(m_chooser);
 
@@ -69,7 +71,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = PathPlannerAutos.testAuto();
+    m_autonomousCommand = PathPlannerAutos.getAutoCommand(m_chooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

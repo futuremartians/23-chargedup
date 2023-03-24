@@ -183,12 +183,21 @@ public class RobotContainer {
     )*/
     
 
-    private final Command goToSubstationConeIntakePos = 
+    private final Command goToSubstationCubeIntakePos = 
     Commands.parallel(
         new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 2),
         Commands.sequence(
             Commands.waitSeconds(0.3),
-            new MoveWristToPos(s_Wrist, WristConstants.wristSubstationIntakePos, 1.8, 0.8)
+            new MoveWristToPos(s_Wrist, WristConstants.wristSubstationCubeIntakePos, 1.8, 0.8)
+        )
+    );
+
+    private final Command goToSubstationConeIntakePos = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armSubstationConeIntakePos, 2),
+        Commands.sequence(
+            Commands.waitSeconds(0.3),
+            new MoveWristToPos(s_Wrist, WristConstants.wristSubstationConeIntakePos, 1.8, 0.8)
         )
     );
         /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -197,7 +206,7 @@ public class RobotContainer {
        //s_Limelight = Limelight.getInstance();
        s_Camera = Camera.getInstance();
 
-        s_Swerve.resetOdometry(new Pose2d());
+        s_Swerve.resetOdometryAndHeading(new Pose2d());
         s_Swerve.zeroGyro();
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -279,7 +288,8 @@ public class RobotContainer {
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
         driver.rightBumper().onTrue(goToBottomIntakePos);
-        driver.a().onTrue(goToSubstationConeIntakePos);
+        driver.a().onTrue(goToSubstationCubeIntakePos);
+        driver.b().onTrue(goToSubstationConeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)

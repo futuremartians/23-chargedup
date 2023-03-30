@@ -43,11 +43,11 @@ public class ElevatorPID extends CommandBase {
       if (Math.abs(pidController.getPositionError()) > 5000) {
          pidController.setTolerance(5000);
       feedforward = feedforwardControl.calculate(0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()+ feedforward), 0, 4);
+      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition() + feedforward), 0, 6);
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);
-         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 0.8);
+         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 1.15);
       }
   } else {
     if (Math.abs(pidController.getPositionError()) > 1000) {

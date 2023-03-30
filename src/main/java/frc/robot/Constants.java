@@ -156,7 +156,7 @@ public final class Constants {
         public static final int elevatorDownPos = 0;//Done
 
         //PID Controller Values
-        public static final double kp = 0.01;
+        public static final double kp = 0.008;
         public static final double ki = 0;
         public static final double kd = 0;
 
@@ -214,6 +214,7 @@ public final class Constants {
         public static final double wristAutoPreloadPos = -24000;
         public static final double wristSubstationCubeIntakePos = 28800;
         public static final double wristSubstationConeIntakePos = 4750;
+        public static final double wristMissingPolePos = -84000;
 
          //PID Controller Values
          public static final double kp = 0.01;

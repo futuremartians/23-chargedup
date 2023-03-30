@@ -40,7 +40,8 @@ public class FlipperPID extends CommandBase {
 
       if (Math.abs(pidController.getPositionError()) > 2000) {
          pidController.setTolerance(2000);
-         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -1.8, 1.8);
+
+         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -2.75, 2.25);
       } else {
           pidController.setTolerance(0);
           voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -0.75, 0.75);

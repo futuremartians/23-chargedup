@@ -68,29 +68,34 @@ public class PathPlannerAutos {
     Commands.sequence(
       new SpinIntakeAuto(s_Intake, 1, 0.3),
       Commands.sequence(
-        Commands.parallel(
-            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 2.25, 1),
-            Commands.sequence(
-                Commands.waitSeconds(0.2),
-                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 3.2)
-            )
+        Commands.sequence(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
+            new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
         ),
-        Commands.parallel(
-            new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos),
+    Commands.parallel(
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
+        Commands.sequence(
+            Commands.waitSeconds(0.2), 
+            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
             Commands.parallel(
-                new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 2.8),
+                new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.7, 1),
+                new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 2.4),
                 Commands.sequence(
+                    Commands.waitSeconds(0.4),
                     Commands.parallel(
-                    new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 2.25, 1),
-                    new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos)
-                    ),
-                    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.8, 0.9)
+                        new MoveArmToPos(s_Arm, ArmConstants.armHighNodeScoringPos, 3.2),
+                        Commands.sequence(
+                            Commands.waitSeconds(0.9),
+                            new MoveWristToPos(s_Wrist, WristConstants.wristHighNodeScoringPos, 1.9, 0.9)
+                            ))
+                    )
+                    )
                 )
             )
-        ),
-        new MoveWristToPos(s_Wrist, 0, 0, 0)
     ),
-    new SpinIntakeAuto(s_Intake, -1, 0.8),
+    new SpinIntakeAuto(s_Intake, -1, 0.6),
     Commands.sequence(
         Commands.parallel(
             new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 2.25, 1),
@@ -122,8 +127,6 @@ public class PathPlannerAutos {
                         return chosenAuto = testAuto();
                 case charge:
                         return chosenAuto = preloadChargeCenterAuto();
-                case preload:
-                        return chosenAuto = preloadCube();
                 case preloadMobilityCableCube:
                         return chosenAuto = preloadMobilityCableCube();
                 case preloadMobilityOpenCube:
@@ -132,8 +135,10 @@ public class PathPlannerAutos {
                         return chosenAuto = preloadMobilityCableCone();
                 case preloadMobilityOpenCone:  
                         return chosenAuto = preloadMobilityOpenCone();
+                default:
+                        break;
         }
-        return null;
+        return chosenAuto = preloadCube();
 }
 
     public enum WhichAuto {
@@ -212,30 +217,30 @@ private static Command makeAuto(String path, double speed, double acceleration) 
       public static Command preloadChargeCenterAuto() {
          return Commands.sequence(
          preloadCube(),
-         makeAuto("1 + charge center", 2.4, 2),
+         makeAuto("1 + charge center pt1", 2.65, 2.5),
          makeAuto("1 + charge center pt2", 1.4, 2),
-         makeAuto("1 + charge center pt3", 2.4, 2)
+         makeAuto("1 + charge center pt3", 2.5, 2.2)
          );
      }
 
      public static Command preloadMobilityCableCube() {
       return Commands.sequence(
          preloadCube(),
-         makeAuto("1 + mobility cable", 1, 1)
+         makeAuto("1 + mobility cable cube", 1, 1)
          );
      }
 
      public static Command preloadMobilityOpenCube() {
       return Commands.sequence(
          preloadCube(),
-         makeAuto("1 + mobility open", 1, 1)
+         makeAuto("1 + mobility open cube", 1, 1)
          );
      }
 
     public static Command preloadMobilityOpenCone() {
         return Commands.sequence(
-            preloadCone(),
-            makeAuto("1 + mobility open cone", 2, 1.5)
+            preloadCone()
+           // makeAuto("1 + mobility open cone", 2, 1.5)
         );
     }
 

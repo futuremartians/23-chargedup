@@ -40,14 +40,14 @@ public class ElevatorPID extends CommandBase {
     double voltage;
 
     if (s_elevator.getMotorPosition() < pidController.getSetpoint()) {
-      if (Math.abs(pidController.getPositionError()) > 2000) {
-         pidController.setTolerance(1000);
+      if (Math.abs(pidController.getPositionError()) > 5000) {
+         pidController.setTolerance(5000);
       feedforward = feedforwardControl.calculate(0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()+ feedforward), 0, 3.8);
+      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()+ feedforward), 0, 4);
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);
-         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.7, 0.9);
+         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 0.8);
       }
   } else {
     if (Math.abs(pidController.getPositionError()) > 1000) {

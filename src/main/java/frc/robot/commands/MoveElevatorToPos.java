@@ -48,7 +48,7 @@ public class MoveElevatorToPos extends CommandBase {
   public boolean isFinished() {
     boolean atPos = false;
 
-    if (Math.abs(s_Elevator.getMotorPosition() - pos) < 2000) {
+    if (Math.abs(s_Elevator.getMotorPosition() - pos) < 5000) {
       atPos = true;
     }
     return atPos;

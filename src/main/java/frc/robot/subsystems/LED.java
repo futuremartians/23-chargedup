@@ -1,76 +1,41 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+
+import edu.wpi.first.networktables.NetworkTableInstance;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class LED extends SubsystemBase {
-    
-  private static LED instance;
-  public static LED getInstance() {
-      if (instance == null) instance = new LED();
-      return instance;
-  }
-    private AddressableLED m_led; 
-    private AddressableLEDBuffer m_ledBuffer;
 
-    private int orangeStreakLED = 0;
-    private int numLoops = 0;
+  /* Rev Robotics Blinkin takes a PWM signal from 1000-2000us
+   * This is identical to a SparkMax motor. 
+   *  -1  corresponds to 1000us
+   *  0   corresponds to 1500us
+   *  +1  corresponds to 2000us
+   */
+  private static CANSparkMax m_blinkin = null;
 
-    public LED() {
-    m_ledBuffer = new AddressableLEDBuffer(60);
-    m_led = new AddressableLED(9);
-
-    m_led.setLength(m_ledBuffer.getLength());
-    m_led.setData(m_ledBuffer);
-    m_led.start();
-  }
-
-
-   public void ledYellow() {
-    
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        // Sets the specified LED to the HSV values for red
-        m_ledBuffer.setRGB(i, 255, 224, 0);
-     }
-     m_led.setData(m_ledBuffer);
-   }
-
-   public void ledPurple() {
-    
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        // Sets the specified LED to the HSV values for red
-        m_ledBuffer.setRGB(i, 189, 0, 252);
-     }
-     m_led.setData(m_ledBuffer);
-   }
-
-   public void ledOrange(){
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      // Sets the specified LED to the RGB values for blue
-      m_ledBuffer.setRGB(i, 241, 102, 35);
-   }
-
-   //turns one led off
-   m_ledBuffer.setRGB(orangeStreakLED, 0, 0, 0);
-
-   //increase brightness
-   if (numLoops%3 == 0){
-      orangeStreakLED += 1;
-
-
-      //Check bounds
-      orangeStreakLED %= m_ledBuffer.getLength();
-    }
-
-   m_led.setData(m_ledBuffer);
-
-
-   numLoops += 1;
-   //Timer.delay(0.2);
-   
+  /**
+   * Creates a new Blinkin LED controller.
+   * 
+   * @param pwmPort  The PWM port the Blinkin is connected to.
+   */
+  public LED(int pwmPort) {
+    CANSparkMax m_led = new CANSparkMax(pwmPort, null);
 
   }
 
+  
+    public void set(double val) {
+      if ((val >= -1.0) && (val <= 1.0)) {
+        m_blinkin.set(val);
+      }
+    
+  }
+
+  public void orange(){
+
+    set(0.65);
+
+  }
 }
-
-   

@@ -21,6 +21,8 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LED;
+import frc.robot.Constants.PWMPorts;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,7 +61,8 @@ public class RobotContainer {
     private final Intake s_Intake = Intake.getInstance();
     //private final Limelight s_Limelight;
     private final Camera s_Camera;
-    private final LED led = new LED();
+    public static final LED m_led = new LED(PWMPorts.kBlinkin);
+    
 
 
 
@@ -211,10 +214,9 @@ public class RobotContainer {
        //s_Limelight = Limelight.getInstance();
        s_Camera = Camera.getInstance();
 
-       SmartDashboard.putData("Green LED", new RunCommand(() -> led.ledPurple(),led));
-       SmartDashboard.putData("Red LED", new RunCommand(() -> led.ledOrange(),led));
-       SmartDashboard.putData("Blue LED", new RunCommand(() -> led.ledYellow(),led));
-      
+       SmartDashboard.putData("Green LED", new RunCommand(() -> m_led.set(0.65), m_led));
+    
+                                                                                                                                                                                                                          
         s_Swerve.resetOdometryAndHeading(new Pose2d());
         s_Swerve.zeroGyro();
         s_Swerve.setDefaultCommand(

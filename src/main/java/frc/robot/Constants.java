@@ -233,4 +233,7 @@ public final class Constants {
          public static final double ki = 0.00;
          public static final double kd = 0;
     }
+    public static final class PWMPorts {
+        public static final int kBlinkin = 0;
+    }
 }

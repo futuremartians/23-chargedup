@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -8,9 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.LED;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FlipperConstants;
@@ -55,6 +58,11 @@ public class RobotContainer {
     private final Intake s_Intake = Intake.getInstance();
     //private final Limelight s_Limelight;
     private final Camera s_Camera;
+    private final LED led = new LED();
+
+
+
+    
 
     /*Command Groups*/
     private final Command goToHighNodeScoringPos = 
@@ -202,6 +210,10 @@ public class RobotContainer {
        //s_Limelight = Limelight.getInstance();
        s_Camera = Camera.getInstance();
 
+       SmartDashboard.putData("Green LED", new RunCommand(() -> led.ledPurple(),led));
+       SmartDashboard.putData("Red LED", new RunCommand(() -> led.ledOrange(),led));
+       SmartDashboard.putData("Blue LED", new RunCommand(() -> led.ledYellow(),led));
+      
         s_Swerve.resetOdometryAndHeading(new Pose2d());
         s_Swerve.zeroGyro();
         s_Swerve.setDefaultCommand(

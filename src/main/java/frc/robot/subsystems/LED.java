@@ -13,6 +13,9 @@ public class LED extends SubsystemBase {
     private AddressableLED m_led; 
     private AddressableLEDBuffer m_ledBuffer;
 
+    private int orangeStreakLED = 0;
+    private int numLoops = 0;
+
     public LED() {
     m_ledBuffer = new AddressableLEDBuffer(60);
     m_led = new AddressableLED(9);
@@ -22,16 +25,8 @@ public class LED extends SubsystemBase {
     m_led.start();
   }
 
-   private void ledOrange() {
 
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        // Sets the specified LED to the HSV values for red
-        m_ledBuffer.setRGB(i, 241, 102, 35);
-     }
-     m_led.setData(m_ledBuffer);
-   }
-
-   private void ledYellow() {
+   public void ledYellow() {
     
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
@@ -40,7 +35,7 @@ public class LED extends SubsystemBase {
      m_led.setData(m_ledBuffer);
    }
 
-   private void ledPurple() {
+   public void ledPurple() {
     
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
@@ -48,6 +43,33 @@ public class LED extends SubsystemBase {
      }
      m_led.setData(m_ledBuffer);
    }
+
+   public void ledOrange(){
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Sets the specified LED to the RGB values for blue
+      m_ledBuffer.setRGB(i, 241, 102, 35);
+   }
+
+   //turns one led off
+   m_ledBuffer.setRGB(orangeStreakLED, 0, 0, 0);
+
+   //increase brightness
+   if (numLoops%3 == 0){
+      orangeStreakLED += 1;
+
+
+      //Check bounds
+      orangeStreakLED %= m_ledBuffer.getLength();
+    }
+
+   m_led.setData(m_ledBuffer);
+
+
+   numLoops += 1;
+   //Timer.delay(0.2);
+   
+
+  }
 
 }
 

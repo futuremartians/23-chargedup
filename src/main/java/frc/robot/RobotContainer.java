@@ -34,6 +34,7 @@ public class RobotContainer {
     private final CommandXboxController operator = new CommandXboxController(1);
 
     private boolean intakeCone;
+    private boolean coneMode = true;
     private int errorsOccurred = 0;
 
 
@@ -296,12 +297,14 @@ public class RobotContainer {
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
         driver.rightBumper().onTrue(goToBottomIntakePos);
-        driver.a().onTrue(goToSubstationCubeIntakePos);
+        driver.a().onTrue(new InstantCommand(() -> singleSubIntake(coneMode)));
         driver.b().onTrue(goToSubstationConeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
         ));
+        operator.x().onTrue(new InstantCommand(() -> coneMode = true));
+        operator.y().onTrue(new InstantCommand(() -> coneMode = false));
        // operator.rightBumper().onTrue(goToBottomIntakePos);
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
        //-29000
@@ -318,5 +321,13 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+    }
+
+    private Command singleSubIntake(boolean isConeMode) {
+        if (isConeMode) {
+            return goToSubstationConeIntakePos;
+        } else {
+            return goToDriverPosFromBottom;
+        }
     }
 }

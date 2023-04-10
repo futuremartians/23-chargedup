@@ -204,10 +204,10 @@ public final class Constants {
         public static final double wristAfterFlipPos = -2000;
         public static final double wristDrivePos = 0;//Done
         public static final double wristUnderElevatorPt1Pos = -43000;
-        public static final double wristUnderElevatorPt2Pos = -95000;
+        public static final double wristUnderElevatorPt2Pos = -83000;
         public static final double wristHighNodeScoringPos = -61500;
         public static final double wristFoldedBeforeIntake = 15000;
-        public static final double wristIntakeBottomPos = -16100;
+        public static final double wristIntakeBottomPos = -15400;
         public static final double wristBeforeScoringPos = -80000;
         public static final double wristMediumNodeScoringPos = -84000;
         public static final double wristMediumNodeScoringIntakeSidePos = -22000;

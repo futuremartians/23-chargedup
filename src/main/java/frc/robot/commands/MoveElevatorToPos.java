@@ -19,7 +19,7 @@ public class MoveElevatorToPos extends CommandBase {
   private double maxVoltage;
 
   /** Creates a new MoveElevatorToPos. */
-  public MoveElevatorToPos(Elevator s_Elevator, double pos) {
+  public MoveElevatorToPos(Elevator s_Elevator, double pos, double maxVoltage) {
     this.maxVoltage = maxVoltage;
     this.pos = pos;
     this.s_Elevator = s_Elevator;
@@ -29,7 +29,7 @@ public class MoveElevatorToPos extends CommandBase {
   @Override
   public void initialize() {
     CommandScheduler.getInstance().schedule(
-      new ElevatorPID(s_Elevator, pos)
+      new ElevatorPID(s_Elevator, pos, maxVoltage)
       );
   }
 

@@ -69,7 +69,42 @@ public class RobotContainer {
 
     /*Command Groups*/
     
+    private final Command goToHighNodeScoringPosPt1 =
+    Commands.sequence(
+        Commands.sequence(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
+            new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
+            new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos)
+           // new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
+        ),
+    Commands.parallel(
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorCommunityPos, 4.5),
+        new MoveWristToPos(s_Wrist, -60000, 3.5, 1)
+         )
+    );
 
+    private final Command goToHighNodeScoringPosPt2 = 
+    Commands.parallel(
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos, 5),
+        Commands.sequence(
+            Commands.waitSeconds(0.4),
+            Commands.parallel(
+            new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt2Pos, 3.5, 1),
+            new MoveArmToPos(s_Arm, ArmConstants.armHighNodeScoringPos, 3.3),
+            Commands.sequence(
+                Commands.waitSeconds(0.4),
+                Commands.parallel(
+                    new MoveArmToPos(s_Arm, ArmConstants.armHighNodeScoringPos, 6),
+                    Commands.sequence(
+                        Commands.waitSeconds(0.5),
+                        new MoveWristToPos(s_Wrist, WristConstants.wristHighNodeScoringPos, 3.3, 0.9)
+                        )
+                    )    
+                )
+            )
+        )
+    );
+    
     private final Command goToHighNodeScoringPos = 
     Commands.sequence(
         Commands.sequence(
@@ -79,7 +114,7 @@ public class RobotContainer {
            // new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
         ),
     Commands.parallel(
-        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos),
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos, 6),
         Commands.sequence(
             Commands.waitSeconds(0.2), 
             new MoveWristToPos(s_Wrist, WristConstants.wristUnderElevatorPt1Pos, 3.2, 1),
@@ -108,7 +143,7 @@ public class RobotContainer {
              new MoveArmToPos(s_Arm, ArmConstants.armUnderElevatorPos, 4.5)
         ),
         Commands.parallel(
-            new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos),
+            new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1),
             Commands.parallel(
                 new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 3.8),
                 Commands.sequence(
@@ -116,7 +151,7 @@ public class RobotContainer {
                     new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 3.5, 1),
                     new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperDrivePos)
                     ),
-                    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 2.4, 0.9)
+                    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.5, 0.9)
                 )
             )
         )
@@ -125,10 +160,10 @@ public class RobotContainer {
     public final Command goToDriverPosFromBottom = 
     Commands.sequence(
     Commands.parallel(
-        new MoveArmToPos(s_Arm, 0, 2.5),
-        new MoveElevatorToPos(s_Elevator, 0), 
+        new MoveArmToPos(s_Arm, 0, 3.5),
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1), 
         new MoveFlipperToPos(s_Flipper, 0),
-        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.7, 1)
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 3, 1)
     ),
     new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
     );
@@ -217,7 +252,7 @@ public class RobotContainer {
        //s_Limelight = Limelight.getInstance();
        s_Camera = Camera.getInstance();
 
-       SmartDashboard.putData("Green LED", new RunCommand(() -> m_led.set(0.65), m_led));
+       
     
                                                                                                                                                                                                                           
         s_Swerve.resetOdometryAndHeading(new Pose2d());
@@ -286,30 +321,29 @@ public class RobotContainer {
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
         operator.povDown().onTrue(goToDriverPosFromTop);
-        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
-        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
+        operator.x().onTrue(new InstantCommand(() -> m_led.orange(), m_led));
 
-        operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
-        operator.leftTrigger().onTrue(new InstantCommand(() -> intakeCone = false));
-        driver.rightTrigger().onTrue(Commands.sequence(
+        operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = false));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> intakeCone = true));
+        driver.rightTrigger().onTrue( Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
             new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
-        )
-     );
+        ));
         operator.povUp().onTrue(goToHighNodeScoringPos);
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
-        //-45000 arm, -13500
         driver.rightBumper().onTrue(goToBottomIntakePos);
-        driver.a().onTrue(singleSub);
+        driver.a().onTrue(goToSubstationCubeIntakePos);
         driver.b().onTrue(goToSubstationConeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
         ));
 
-        operator.x().onTrue(new InstantCommand(() -> singleSub = goToSubstationConeIntakePos));
+       // operator.x().onTrue(new InstantCommand(() -> singleSub = goToSubstationConeIntakePos));
         operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
        // operator.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
         //operator.y().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));

@@ -16,8 +16,10 @@ public class ElevatorPID extends CommandBase {
   private final Elevator s_elevator;
   PIDController pidController;
   ElevatorFeedforward feedforwardControl;
+  private double maxVoltage;
 
-  public ElevatorPID(Elevator s_elevator, double pos) {
+  public ElevatorPID(Elevator s_elevator, double pos, double maxVoltage) {
+    this.maxVoltage = maxVoltage;
     this.s_elevator = s_elevator;
     this.pidController = new PIDController(ElevatorConstants.kp,ElevatorConstants.ki,ElevatorConstants.kd);
     pidController.setSetpoint(pos);
@@ -43,11 +45,11 @@ public class ElevatorPID extends CommandBase {
       if (Math.abs(pidController.getPositionError()) > 5000) {
          pidController.setTolerance(5000);
       feedforward = feedforwardControl.calculate(0.5);
-      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition() + feedforward), 0, 6);
+      voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition() + feedforward), 0, maxVoltage);
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);
-         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 1.15);
+         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 1.25);
       }
   } else {
     if (Math.abs(pidController.getPositionError()) > 1000) {

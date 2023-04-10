@@ -1,27 +1,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.*;
 
 public class LED extends SubsystemBase {
 
-  /* Rev Robotics Blinkin takes a PWM signal from 1000-2000us
-   * This is identical to a SparkMax motor. 
-   *  -1  corresponds to 1000us
-   *  0   corresponds to 1500us
-   *  +1  corresponds to 2000us
-   */
-  private Spark spark = new Spark(0);
+  private static Spark spark; 
 
-  /**
-   * Creates a new Blinkin LED controller.
-   * 
-   *   The PWM port the Blinkin is connected to.
-   */
   public LED(int pwmPort) {
-    Spark m_led = new Spark(pwmPort);
+    spark = new Spark(pwmPort);
 
   }
 
@@ -38,4 +31,7 @@ public class LED extends SubsystemBase {
     set(0.65);
 
   }
+
+ 
+  
 }

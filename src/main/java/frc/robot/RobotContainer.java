@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,10 +37,8 @@ public class RobotContainer {
     private final CommandXboxController operator = new CommandXboxController(1);
 
     private boolean intakeCone;
-    private boolean coneMode = true;
-    private int errorsOccurred = 0;
-
-
+    private boolean coneMode = false;
+    
     /* Drive Controls 
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -69,6 +68,8 @@ public class RobotContainer {
     
 
     /*Command Groups*/
+    
+
     private final Command goToHighNodeScoringPos = 
     Commands.sequence(
         Commands.sequence(
@@ -191,7 +192,7 @@ public class RobotContainer {
     )*/
     
 
-    private final Command goToSubstationCubeIntakePos = 
+    public final Command goToSubstationCubeIntakePos = 
     Commands.parallel(
         new MoveArmToPos(s_Arm, ArmConstants.armGroundIntakePos, 2),
         Commands.sequence(
@@ -200,7 +201,7 @@ public class RobotContainer {
         )
     );
 
-    private final Command goToSubstationConeIntakePos = 
+    public final Command goToSubstationConeIntakePos = 
     Commands.parallel(
         new MoveArmToPos(s_Arm, ArmConstants.armSubstationConeIntakePos, 2),
         Commands.sequence(
@@ -208,6 +209,8 @@ public class RobotContainer {
             new MoveWristToPos(s_Wrist, WristConstants.wristSubstationConeIntakePos, 1.8, 0.8)
         )
     );
+
+    private Command singleSub;
         /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
 
@@ -231,28 +234,28 @@ public class RobotContainer {
           s_Elevator.setDefaultCommand(
             new ElevatorJoystick(
                 s_Elevator, 
-                () -> -operator.getRightX()*0.4
+                () -> -operator.getRightX() * 0.4
             )
         );
 
         s_Arm.setDefaultCommand(
             new ArmJoystick(
                 s_Arm, 
-                () -> -operator.getRightY()*0.4
+                () -> -operator.getRightY() * 0.4
             )
         );
 
          s_Wrist.setDefaultCommand(
             new WristJoystick(
                 s_Wrist, 
-                () -> -operator.getLeftY()*0.4
+                () -> -operator.getLeftY() * 0.4
             )
         );
 
         s_Flipper.setDefaultCommand(
             new FlipperJoystick(
                 s_Flipper, 
-                () -> -operator.getLeftX()*0.2
+                () -> -operator.getLeftX() * 0.2
             )
         );
 
@@ -287,7 +290,7 @@ public class RobotContainer {
         operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
 
         operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = true));
-        operator.leftTrigger().whileTrue(new InstantCommand(() -> intakeCone = false));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> intakeCone = false));
         driver.rightTrigger().onTrue(Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
@@ -299,14 +302,17 @@ public class RobotContainer {
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
         //-45000 arm, -13500
         driver.rightBumper().onTrue(goToBottomIntakePos);
-        driver.a().onTrue(new InstantCommand(() -> singleSubIntake(coneMode)));
+        driver.a().onTrue(singleSub);
         driver.b().onTrue(goToSubstationConeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
         ));
-        operator.x().onTrue(new InstantCommand(() -> coneMode = true));
-        operator.y().onTrue(new InstantCommand(() -> coneMode = false));
+
+        operator.x().onTrue(new InstantCommand(() -> singleSub = goToSubstationConeIntakePos));
+        operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
+       // operator.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
+        //operator.y().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
        // operator.rightBumper().onTrue(goToBottomIntakePos);
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
        //-29000
@@ -325,11 +331,12 @@ public class RobotContainer {
      */
     }
 
-    private Command singleSubIntake(boolean isConeMode) {
-        if (isConeMode) {
-            return goToSubstationConeIntakePos;
+    private void singleSubIntake() {
+        
+        if (coneMode) {
+            singleSub = goToSubstationConeIntakePos;
         } else {
-            return goToDriverPosFromBottom;
+            singleSub = goToSubstationCubeIntakePos;
         }
     }
 }

@@ -181,9 +181,11 @@ public final class Constants {
         public static final double armMediumNodeScoringPos = -75000;
         public static final double armMediumNodeScoringIntakeSidePos = -20000;
         public static final double armSubstationConeIntakePos = -33000;
+        public static final double armDoubleSubstationConIntakePos = -37000;
+        public static final double armDoubleSubstationCubeIntakePos = -17000;
         //5500 -35000
         
-
+//-17000, -13000
          //PID Controller Values
          public static final double kp = 0.005;
          public static final double ki = 0;
@@ -217,6 +219,8 @@ public final class Constants {
         public static final double wristSubstationConeIntakePos = 4750;
         public static final double wristMissingPolePos = -84000;
         public static final double wristCommunityPos = -60000;
+        public static final double wristDoubleSubstationConeIntakePos = 18250;
+        public static final double wristDoubleSubstationCubeIntakePos = -13000;
 
          //PID Controller Values
          public static final double kp = 0.01;
@@ -228,10 +232,10 @@ public final class Constants {
         public static final int flipperMotorID = 19;
 
         public static final double flipperDrivePos = 0;
-        public static final double flipperScoringPos = -27000;
+        public static final double flipperScoringPos = -25750;
 
          //PID Controller Values
-         public static final double kp = 0.035;
+         public static final double kp = 0.022;
          public static final double ki = 0.00;
          public static final double kd = 0;
     }

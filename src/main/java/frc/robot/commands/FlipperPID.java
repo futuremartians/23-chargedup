@@ -38,13 +38,13 @@ public class FlipperPID extends CommandBase {
     double feedforward;
     double voltage;
 
-      if (Math.abs(pidController.getPositionError()) > 2000) {
-         pidController.setTolerance(2000);
+      if (Math.abs(pidController.getPositionError()) > 5000) {
+         pidController.setTolerance(5000);
 
-         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -2.75, 2.25);
+         voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -2.5, 2.5);
       } else {
           pidController.setTolerance(0);
-          voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -0.75, 0.75);
+          voltage = MathUtil.clamp(pidController.calculate(s_Flipper.getMotorPosition()), -1, 1);
       }
     s_Flipper.setFlipperVoltage(voltage);
   }

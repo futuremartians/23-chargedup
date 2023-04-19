@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,15 +43,47 @@ public class PathPlannerAutos {
    private static Elevator s_Elevator = Elevator.getInstance();
    private static Flipper s_Flipper = Flipper.getInstance();
    static HashMap<String, Command> eventMap = new HashMap<String, Command>();
+   static Timer autoTimer = new Timer();
+
 
     private static Command lastCommand;
     private static Command chosenAuto;
     //private SwerveAutoBuilder autoBuilder;
+    public final static Command goToDriverPosFromBottom = 
+    Commands.sequence(
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, 0, 3),
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1), 
+        new MoveFlipperToPos(s_Flipper, 0),
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 1)
+    ),
+    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
+    );
+
+    public final static Command scoreMediumPreloadCone =
+    Commands.sequence(
+        new SpinIntakeAuto(s_Intake, -1, 0.4),
+        Commands.sequence(
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringIntakeSidePos, 2.4, 1),
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringIntakeSidePos, 1.7)
+    ),
+    new SpinIntakeAuto(s_Intake, 1, 0.4)
+    );
+
+    public final static Command scoreMediumPreloadCube =
+    Commands.sequence(
+        new SpinIntakeAuto(s_Intake, 1, 0.4),
+        Commands.sequence(
+        new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringIntakeSidePos, 2.4, 1),
+        new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringIntakeSidePos, 1.7)
+    ),
+    new SpinIntakeAuto(s_Intake, -1, 0.4)
+    );
 
     public final static Command scorePreloadCube = 
     Commands.sequence(
     Commands.parallel(
-       new SpinIntakeAuto(s_Intake, -0.9, 0.2),
+       new SpinIntakeAuto(s_Intake, 0.9, 0.4),
        Commands.sequence(
        Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
@@ -59,7 +92,7 @@ public class PathPlannerAutos {
        )
     ),
     Commands.sequence(
-      new SpinIntakeAuto(s_Intake, 1, 0.8),
+      new SpinIntakeAuto(s_Intake, -0.75, 0.8),
       new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.4, 1)
     )  
     );
@@ -213,11 +246,13 @@ private static Command makeAuto(String path, double speed, double acceleration) 
      }
 
       public static Command preloadChargeCenterAuto() {
-         return Commands.sequence(
-         preloadCube(),
-         makeAuto("1 + charge center pt1", 2.65, 2.5),
-         makeAuto("1 + charge center pt2", 1.4, 2),
-         makeAuto("1 + charge center pt3", 2.5, 2.2)
+        return Commands.sequence(
+        preloadCube(),
+        makeAuto("1 + charge center pt1", 2.65, 2.5),
+        makeAuto("1 + charge center pt2", 1.4, 2),
+        Commands.waitSeconds(0.5),
+        makeAuto("1 + charge center pt3", 2.55, 2.4),                
+        new AutoBalance()
          );
      }
 
@@ -237,14 +272,14 @@ private static Command makeAuto(String path, double speed, double acceleration) 
 
     public static Command preloadMobilityOpenCone() {
         return Commands.sequence(
-            preloadCone(),
+            preloadMediumCone(),
             makeAuto("1 + mobility open cone", 2, 1.5)
         );
     }
 
     public static Command preloadMobilityCableCone() {
         return Commands.sequence(
-         preloadCone(),
+         preloadMediumCone(),
          makeAuto("1 + mobility cable cone", 2, 1.5)
          );
     }
@@ -254,6 +289,12 @@ private static Command makeAuto(String path, double speed, double acceleration) 
      }
      public static Command preloadCone() {
         return scorePreloadCone;
+     }
+     public static Command preloadMediumCone() {
+        return scoreMediumPreloadCone;
+     }
+     public static Command goToDriverPos() {
+        return goToDriverPosFromBottom;
      }
    }
 

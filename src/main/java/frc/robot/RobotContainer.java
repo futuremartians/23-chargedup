@@ -160,10 +160,10 @@ public class RobotContainer {
     public final Command goToDriverPosFromBottom = 
     Commands.sequence(
     Commands.parallel(
-        new MoveArmToPos(s_Arm, 0, 3.5),
+        new MoveArmToPos(s_Arm, 0, 2.65),
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1), 
         new MoveFlipperToPos(s_Flipper, 0),
-        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 3, 1)
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 1)
     ),
     new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
     );
@@ -226,6 +226,24 @@ public class RobotContainer {
         )
     )*/
     
+
+    public final Command goToDoubleSubstationConeIntakePos = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armDoubleSubstationConIntakePos, 2.5),
+        Commands.sequence(
+            Commands.waitSeconds(0.3),
+            new MoveWristToPos(s_Wrist, WristConstants.wristDoubleSubstationConeIntakePos, 2, 0.8)
+        )
+    );
+
+    public final Command goToDoubleSubstationCubeIntakePos = 
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, ArmConstants.armDoubleSubstationCubeIntakePos, 2.5),
+        Commands.sequence(
+            Commands.waitSeconds(0.2),
+            new MoveWristToPos(s_Wrist, WristConstants.wristDoubleSubstationCubeIntakePos, 2, 0.8)
+        )
+    );
 
     public final Command goToSubstationCubeIntakePos = 
     Commands.parallel(
@@ -314,7 +332,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        driver.povUp().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
         /* Operator Buttons */
         //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
@@ -338,6 +356,7 @@ public class RobotContainer {
         driver.rightBumper().onTrue(goToBottomIntakePos);
         driver.a().onTrue(goToSubstationCubeIntakePos);
         driver.b().onTrue(goToSubstationConeIntakePos);
+        driver.y().onTrue(goToSubstationCubeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
@@ -351,6 +370,7 @@ public class RobotContainer {
        // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
        //-29000
         operator.povRight().onTrue(goToMediumNodeScoringPos);
+        driver.x().onTrue(goToDoubleSubstationConeIntakePos);
         /*operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
         operator.x().onTrue(new MoveFlipperToPos(s_Flipper, 0));
         operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));

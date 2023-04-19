@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.autos.PathPlannerAutos;
 import frc.robot.autos.PathPlannerAutos.WhichAuto;
 import frc.robot.subsystems.Camera;
+import frc.robot.subsystems.Swerve;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<PathPlannerAutos.WhichAuto> m_chooser = new SendableChooser<>();
 
   private RobotContainer m_robotContainer;
+  //private Swerve s_Swerve = Swerve.getInstance();
 
   @Override
   public void robotInit() {
@@ -88,6 +90,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+   // s_Swerve.gyro.setYaw(0);
   }
 
   /** This function is called periodically during operator control. */

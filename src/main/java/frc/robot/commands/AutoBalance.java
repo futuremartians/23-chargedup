@@ -23,6 +23,7 @@ public class AutoBalance extends CommandBase {
     double direction = 1.0;
     boolean finished = false;
     Timer timer = new Timer();
+    double timeLeft;
 
     public AutoBalance() {
         s_Swerve = Swerve.getInstance();
@@ -43,13 +44,13 @@ public class AutoBalance extends CommandBase {
         // since the last time the loop ran (20 ms ago) so bascially when the rate of
         // change is 0.135 dgrees / 20 ms
         // or 6.5 degrees/sec, then stop moving the robot forward
-        if (Math.abs(s_Swerve.getPitch()) + 0.135 >= Math.abs(robotPitch) || timer.get() < 1.2) {
+        if (Math.abs(s_Swerve.getPitch()) + 0.135 >= Math.abs(robotPitch) || timer.get() < 8) {
             driveSpeed = driveController.calculate(s_Swerve.getPitch(), 0);
             SmartDashboard.putNumber("drive speed", driveSpeed);
             SmartDashboard.putNumber("last pit", Math.abs(robotPitch));
             SmartDashboard.putNumber("curr pit 3", Math.abs(s_Swerve.getPitch()) + 3);
             s_Swerve.drive(
-                    new Translation2d(driveSpeed, 0).times(Constants.Swerve.maxSpeed),
+                    new Translation2d(driveSpeed * 0.7, 0).times(Constants.Swerve.maxSpeed),
                     0,
                     false,
                     true);

@@ -37,7 +37,8 @@ public class Robot extends TimedRobot {
     
     m_chooser.setDefaultOption("Preload Mobility Open Cube", WhichAuto.preloadMobilityOpenCube);
     m_chooser.addOption("Charge Center Auto", WhichAuto.charge);
-    m_chooser.addOption("Preload", WhichAuto.preload);
+    m_chooser.addOption("Preload Cube", WhichAuto.preload);
+    m_chooser.addOption("Preload Cube", WhichAuto.preload);
     m_chooser.addOption("Preload Mobility Cable Cube", WhichAuto.preloadMobilityCableCube);
     m_chooser.addOption("Preload Mobility Cable Cone", WhichAuto.preloadMobilityCableCone);
     m_chooser.addOption("Preload Mobility Open Cone", WhichAuto.preloadMobilityOpenCone);

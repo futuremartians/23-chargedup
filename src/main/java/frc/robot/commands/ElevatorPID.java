@@ -49,7 +49,7 @@ public class ElevatorPID extends CommandBase {
       } else {
           pidController.setTolerance(0);
           feedforward = feedforwardControl.calculate(0.1);
-         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 1.25);
+         voltage = MathUtil.clamp(pidController.calculate(s_elevator.getMotorPosition()), -0.6, 0.9);
       }
   } else {
     if (Math.abs(pidController.getPositionError()) > 1000) {

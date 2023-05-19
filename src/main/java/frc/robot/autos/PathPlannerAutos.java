@@ -67,7 +67,16 @@ public class PathPlannerAutos {
         new MoveWristToPos(s_Wrist, WristConstants.wristMediumNodeScoringIntakeSidePos, 2.4, 1),
         new MoveArmToPos(s_Arm, ArmConstants.armMediumNodeScoringIntakeSidePos, 1.7)
     ),
-    new SpinIntakeAuto(s_Intake, 1, 0.4)
+    new SpinIntakeAuto(s_Intake, 1, 0.4),
+    Commands.sequence(
+    Commands.parallel(
+        new MoveArmToPos(s_Arm, 0, 3),
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1), 
+        new MoveFlipperToPos(s_Flipper, 0),
+        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 1)
+    ),
+    new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
+    )
     );
 
     public final static Command scoreMediumPreloadCube =
@@ -92,7 +101,7 @@ public class PathPlannerAutos {
        )
     ),
     Commands.sequence(
-      new SpinIntakeAuto(s_Intake, -0.75, 0.8),
+      new SpinIntakeAuto(s_Intake, -0.55, 0.8),
       new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1.4, 1)
     )  
     );

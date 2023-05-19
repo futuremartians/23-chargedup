@@ -155,9 +155,11 @@ public final class Constants {
         public static final int elevatorUpPos = 92500;//Done
         public static final int elevatorDownPos = 0;//Done
         public static final int elevatorCommunityPos = 70000;
+        public static final double elevatorDoubleSubstationIntakePos = 34000;
+        public static final double elevatorDoubleSubstationIntakePosOld = 17000;
 
         //PID Controller Values
-        public static final double kp = 0.006;
+        public static final double kp = 0.004;
         public static final double ki = 0;
         public static final double kd = 0;
 
@@ -181,8 +183,9 @@ public final class Constants {
         public static final double armMediumNodeScoringPos = -75000;
         public static final double armMediumNodeScoringIntakeSidePos = -20000;
         public static final double armSubstationConeIntakePos = -33000;
-        public static final double armDoubleSubstationConIntakePos = -37000;
+        public static final double armDoubleSubstationConIntakePos = -36000;
         public static final double armDoubleSubstationCubeIntakePos = -17000;
+        public static final double armDoubleSubstationCubeIntakePosOld = -17000;
         //5500 -35000
         
 //-17000, -13000
@@ -220,7 +223,8 @@ public final class Constants {
         public static final double wristMissingPolePos = -84000;
         public static final double wristCommunityPos = -60000;
         public static final double wristDoubleSubstationConeIntakePos = 18250;
-        public static final double wristDoubleSubstationCubeIntakePos = -13000;
+        public static final double wristDoubleSubstationCubeIntakePos = -33000;
+        public static final double wristDoubleSubstationCubeIntakePosOld = -22000;
 
          //PID Controller Values
          public static final double kp = 0.01;

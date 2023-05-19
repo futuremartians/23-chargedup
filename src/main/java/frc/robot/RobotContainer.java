@@ -238,6 +238,7 @@ public class RobotContainer {
 
     public final Command goToDoubleSubstationCubeIntakePos = 
     Commands.parallel(
+        new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDoubleSubstationIntakePos, 3),
         new MoveArmToPos(s_Arm, ArmConstants.armDoubleSubstationCubeIntakePos, 2.5),
         Commands.sequence(
             Commands.waitSeconds(0.2),
@@ -278,8 +279,8 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getLeftY(), 
-                () -> -driver.getLeftX(), 
+                () -> -0.3*driver.getLeftY(), 
+                () -> -0.3*driver.getLeftX(), 
                 () -> -driver.getRightX(), 
                 () -> false
             )
@@ -333,12 +334,19 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         driver.povUp().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        driver.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
+        driver.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
+        driver.rightBumper().onTrue(Commands.parallel(
+            new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
+            new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
+        ));
+        driver.leftBumper().onTrue(goToDriverPosFromBottom);
 
         /* Operator Buttons */
         //Commands.parallel(new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos), 
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
-        operator.povDown().onTrue(goToDriverPosFromTop);
+        /*operator.povDown().onTrue(goToDriverPosFromTop);
         operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
         operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
         operator.x().onTrue(new InstantCommand(() -> m_led.orange(), m_led));
@@ -356,14 +364,14 @@ public class RobotContainer {
         driver.rightBumper().onTrue(goToBottomIntakePos);
         driver.a().onTrue(goToSubstationCubeIntakePos);
         driver.b().onTrue(goToSubstationConeIntakePos);
-        driver.y().onTrue(goToSubstationCubeIntakePos);
+        driver.y().onTrue(goToDoubleSubstationCubeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
         ));
 
        // operator.x().onTrue(new InstantCommand(() -> singleSub = goToSubstationConeIntakePos));
-        operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
+       // operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
        // operator.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
         //operator.y().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
        // operator.rightBumper().onTrue(goToBottomIntakePos);
@@ -378,11 +386,7 @@ public class RobotContainer {
 
         //operator.b().onTrue(goToHighPoleScoringPos);
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
+    */
     }
 
     private void singleSubIntake() {

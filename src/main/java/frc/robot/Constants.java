@@ -207,6 +207,7 @@ public final class Constants {
         public static double holdPos = 0;
 
         public static final double wristReadyToFlipPos = -20000;
+        public static final double wristDrivePosWhileComingUp = -10000;
         public static final double wristAfterFlipPos = -2000;
         public static final double wristDrivePos = 0;//Done
         public static final double wristUnderElevatorPt1Pos = -43000;
@@ -227,7 +228,7 @@ public final class Constants {
         public static final double wristDoubleSubstationCubeIntakePosOld = -22000;
 
          //PID Controller Values
-         public static final double kp = 0.01;
+         public static final double kp = 0.01;//old val: 0.01
          public static final double ki = 0;
          public static final double kd = 0;
     }

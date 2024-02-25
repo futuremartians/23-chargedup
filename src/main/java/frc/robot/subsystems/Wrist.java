@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+//import java.beans.Encoder;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -11,6 +13,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class Wrist extends SubsystemBase {
 
@@ -21,11 +25,16 @@ public class Wrist extends SubsystemBase {
     }
 
   private WPI_TalonFX wristMotor;
+  private DutyCycleEncoder wristEncoder;
+  
 
   /** Creates a new Wrist. */
   public Wrist() {
     wristMotor = new WPI_TalonFX(WristConstants.wristMotorID);
     wristMotor.setNeutralMode(NeutralMode.Brake);
+    wristEncoder = new DutyCycleEncoder(1);
+    wristEncoder.setDistancePerRotation(208620);
+    wristEncoder.reset();
   }
 
   public void setWristSpeed(double speed) {
@@ -37,7 +46,8 @@ public void setWristVoltage(double voltage) {
 }
 
 public double getMotorPosition() {
-return wristMotor.getSelectedSensorPosition();
+  return wristMotor.getSelectedSensorPosition();
+  //return -1*wristEncoder.getDistance();
 }
 
 public double getWristMotorVoltage() {

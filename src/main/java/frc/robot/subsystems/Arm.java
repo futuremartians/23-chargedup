@@ -9,9 +9,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;;
+import frc.robot.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
 
@@ -22,6 +23,7 @@ public class Arm extends SubsystemBase {
     }
 
     private WPI_TalonFX leftArmMotor, rightArmMotor;
+    private DutyCycleEncoder armEncoder;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -32,6 +34,10 @@ public class Arm extends SubsystemBase {
 
     rightArmMotor = new WPI_TalonFX(ArmConstants.rightArmMotorID);
     rightArmMotor.setNeutralMode(NeutralMode.Brake);
+
+    armEncoder = new DutyCycleEncoder(0);
+    armEncoder.setDistancePerRotation(160714);
+    armEncoder.reset();
   }
 
   public void setArmSpeed(double speed) {
@@ -43,7 +49,8 @@ public void setArmVoltage(double voltage) {
 }
 
 public double getMotorPosition() {
-return rightArmMotor.getSelectedSensorPosition();
+//return rightArmMotor.getSelectedSensorPosition();
+return -1 * armEncoder.getDistance();
 }
 
 public double getRightMotorVoltage() {

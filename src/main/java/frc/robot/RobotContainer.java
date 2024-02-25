@@ -163,7 +163,10 @@ public class RobotContainer {
         new MoveArmToPos(s_Arm, 0, 2.65),
         new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorDownPos, 1), 
         new MoveFlipperToPos(s_Flipper, 0),
-        new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 1)
+        Commands.sequence(
+            Commands.waitSeconds(0.15),
+            new MoveWristToPos(s_Wrist, WristConstants.wristDrivePosWhileComingUp, 2.5, 1)
+        )
     ),
     new MoveWristToPos(s_Wrist, WristConstants.wristDrivePos, 1, 1)
     );
@@ -339,45 +342,33 @@ public class RobotContainer {
         //new MoveArmToPos(s_Arm, ArmConstants.armReadyToFlipPos))
 
         operator.povDown().onTrue(goToDriverPosFromTop);
-        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> -1));
-        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
-        operator.x().onTrue(new InstantCommand(() -> m_led.orange(), m_led));
-
-        operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = false));
-        operator.leftTrigger().onTrue(new InstantCommand(() -> intakeCone = true));
-        driver.rightTrigger().onTrue( Commands.sequence(
+        //operator.x().onTrue(new InstantCommand(() -> m_led.orange(), m_led));
+       /* driver.rightTrigger().onTrue( Commands.sequence(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1.5),
             new MoveWristToPos(s_Wrist, WristConstants.wristReadyToFlipPos, 2, 1.2),
             new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos),
             new MoveWristToPos(s_Wrist, WristConstants.wristAfterFlipPos, 2, 1.2)
-        ));
+        ));*/
+        operator.rightTrigger().whileTrue(new spinIntake(s_Intake, () -> -0.9));
+        operator.leftTrigger().whileTrue(new spinIntake(s_Intake, () -> 1));
         operator.povUp().onTrue(goToHighNodeScoringPos);
+        operator.rightTrigger().onTrue(new InstantCommand (() -> intakeCone = false));
+        operator.leftTrigger().onTrue(new InstantCommand(() -> intakeCone = true));
         driver.leftBumper().onTrue(goToDriverPosFromBottom);
         driver.rightBumper().onTrue(goToBottomIntakePos);
-        driver.a().onTrue(goToSubstationCubeIntakePos);
-        driver.b().onTrue(goToSubstationConeIntakePos);
-        driver.y().onTrue(goToSubstationCubeIntakePos);
+        driver.a().onTrue(goToSubstationCubeIntakePos);  
+        //driver.b().onTrue(goToSubstationConeIntakePos);
+        //driver.y().onTrue(goToDoubleSubstationCubeIntakePos);
         operator.a().onTrue(Commands.parallel(
             new MoveArmToPos(s_Arm, ArmConstants.armDrivePos, 1),
             new MoveWristToPos(s_Wrist, WristConstants.wristAutoPreloadPos, 1.75, 0.8)
         ));
 
-       // operator.x().onTrue(new InstantCommand(() -> singleSub = goToSubstationConeIntakePos));
-        operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
-       // operator.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
-        //operator.y().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("ConeMode", coneMode)));
-       // operator.rightBumper().onTrue(goToBottomIntakePos);
-       // operator.povRight().onTrue(new WristPID(s_Wrist, WristConstants.wristReadyToFlipPos, 2.5, 0.9));
-       //-29000
-        operator.povRight().onTrue(goToMediumNodeScoringPos);
-        driver.x().onTrue(goToDoubleSubstationConeIntakePos);
-        /*operator.b().onTrue(new MoveFlipperToPos(s_Flipper, FlipperConstants.flipperScoringPos));
-        operator.x().onTrue(new MoveFlipperToPos(s_Flipper, 0));
-        operator.y().onTrue(new MoveElevatorToPos(s_Elevator, ElevatorConstants.elevatorUpPos));
-        //operator.leftBumper().onTrue(new MoveArmToPos(s_Arm, ArmConstants.armDrivePos));
 
-        //operator.b().onTrue(goToHighPoleScoringPos);
-
+        //operator.y().onTrue(new InstantCommand(() -> singleSub = goToSubstationCubeIntakePos));
+        //operator.povRight().onTrue(goToMediumNodeScoringPos);
+       // driver.x().onTrue(goToDoubleSubstationConeIntakePos);
+    
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
